@@ -398,6 +398,7 @@
     </div>
     <nav style="flex: 1; padding: 16px 0;">
       <div class="nav-item active" onclick="switchSection('dashboard')">📊 Dashboard</div>
+      <div class="nav-item" onclick="switchSection('inventory')">📈 Inventory</div>
       <div class="nav-item" onclick="switchSection('branding')">🎨 Branding</div>
       <div class="nav-item" onclick="switchSection('brands')">🏷️ Brands</div>
       <div class="nav-item" onclick="switchSection('products')">⌚ Products</div>
@@ -424,26 +425,32 @@
 
         <div class="dashboard-grid">
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
             <div class="stat-value" id="totalProducts">0</div>
             <div class="stat-label">Products</div>
           </div>
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">🏷️</div>
             <div class="stat-value" id="totalBrands">0</div>
             <div class="stat-label">Brands</div>
           </div>
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">📦</div>
             <div class="stat-value" id="totalStock">0</div>
             <div class="stat-label">Total Stock</div>
           </div>
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">💰</div>
             <div class="stat-value" id="discountedItems">0</div>
             <div class="stat-label">Discounted</div>
           </div>
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">🎉</div>
             <div class="stat-value" id="activeCampaigns">0</div>
             <div class="stat-label">Active Campaigns</div>
           </div>
           <div class="stat-card">
+            <div style="font-size: 32px; margin-bottom: 8px;">⚠️</div>
             <div class="stat-value" id="lowStockCount">0</div>
             <div class="stat-label">Low Stock</div>
           </div>
@@ -458,6 +465,64 @@
             <h3>🎉 Active Campaigns</h3>
             <div id="activeCampaignsList" style="font-size: 13px; color: var(--text-secondary);">No active campaigns</div>
           </div>
+        </div>
+      </div>
+
+      <!-- INVENTORY SECTION -->
+      <div id="inventory" class="section">
+        <div class="page-title">📈 Inventory Analytics</div>
+        <div class="page-subtitle">Track product views, cart additions, and purchases</div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>👁️ Product Views</h3>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Most viewed products by customers</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Views</th>
+                </tr>
+              </thead>
+              <tbody id="viewsTable"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>🛒 Cart Additions</h3>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Products added to cart</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Added</th>
+                </tr>
+              </thead>
+              <tbody id="cartTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>📊 Inventory Summary</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Brand</th>
+                <th>Stock</th>
+                <th>Views</th>
+                <th>In Cart</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventoryTable"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>⚙️ Actions</h3>
+          <button class="btn btn-primary" onclick="clearAnalytics()">Reset Analytics</button>
+          <button class="btn btn-secondary" onclick="exportAnalytics()" style="margin-left: 8px;">Export Data</button>
         </div>
       </div>
 
@@ -521,7 +586,8 @@
                 <th>Price</th>
                 <th>Gender</th>
                 <th>Stock</th>
-                <th>Images</th>
+                <th>Photos</th>
+                <th>Videos</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -562,6 +628,14 @@
               <input type="file" id="photoInput" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)">
             </div>
             <div id="photoPreview" class="image-preview"></div>
+          </div>
+          <div class="card">
+            <h3>🎥 Showcase Videos</h3>
+            <div class="upload-area" ondrop="handleDrop(event, 'video')" ondragover="event.preventDefault()" onclick="document.getElementById('videoInput').click()">
+              Drop videos or click
+              <input type="file" id="videoInput" accept="video/*" multiple style="display: none;" onchange="handleVideoUpload(event)">
+            </div>
+            <div id="videoPreview" class="image-preview"></div>
           </div>
         </div>
       </div>
@@ -670,8 +744,16 @@
         <input type="number" id="productStock" value="5">
       </div>
       <div class="form-group">
-        <label>Product Images</label>
+        <label>📸 Product Photos (Multiple Angles)</label>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Upload multiple photos from different angles to help customers decide</p>
         <input type="file" id="productImages" accept="image/*" multiple>
+        <div id="productImagePreview" class="image-preview" style="margin-top: 12px;"></div>
+      </div>
+      <div class="form-group">
+        <label>🎥 Product Videos (Optional)</label>
+        <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">Upload videos showing the product in action (360 view, closeups, etc.)</p>
+        <input type="file" id="productVideos" accept="video/*" multiple>
+        <div id="productVideoPreview" class="image-preview" style="margin-top: 12px;"></div>
       </div>
       <button class="btn btn-primary" onclick="addProduct()">Add Product</button>
     </div>
@@ -850,8 +932,56 @@
       campaignSelect.innerHTML = store.products.map((p, i) => `<option value="${i}">${p.name} - ${p.brand}</option>`).join('');
     }
 
-    function openProductModal() { document.getElementById('productModal').classList.add('active'); }
-    function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+    function openProductModal() {
+      document.getElementById('productModal').classList.add('active');
+      // Setup file input listeners for preview
+      document.getElementById('productImages').addEventListener('change', previewProductImages);
+      document.getElementById('productVideos').addEventListener('change', previewProductVideos);
+    }
+
+    function previewProductImages() {
+      const files = document.getElementById('productImages').files;
+      const preview = document.getElementById('productImagePreview');
+      preview.innerHTML = '';
+      Array.from(files).forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.innerHTML += `
+            <div class="image-item">
+              <img src="${e.target.result}" alt="Photo ${i + 1}">
+              <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Photo ${i + 1}</div>
+            </div>
+          `;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function previewProductVideos() {
+      const files = document.getElementById('productVideos').files;
+      const preview = document.getElementById('productVideoPreview');
+      preview.innerHTML = '';
+      Array.from(files).forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.innerHTML += `
+            <div class="image-item">
+              <video width="100%" height="100%" style="object-fit: cover;" controls>
+                <source src="${e.target.result}">
+              </video>
+              <div style="position: absolute; bottom: 4px; left: 4px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">Video ${i + 1}</div>
+            </div>
+          `;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.remove('active');
+      document.getElementById('productImagePreview').innerHTML = '';
+      document.getElementById('productVideoPreview').innerHTML = '';
+    }
 
     function addProduct() {
       const name = document.getElementById('productName').value;
@@ -859,50 +989,70 @@
       const price = document.getElementById('productPrice').value;
       const gender = document.getElementById('productGender').value;
       const stock = document.getElementById('productStock').value;
-      const files = document.getElementById('productImages').files;
+      const photoFiles = document.getElementById('productImages').files;
+      const videoFiles = document.getElementById('productVideos').files;
 
-      if (name && price) {
-        const images = [];
-        let loaded = 0;
+      if (!name || !price) { alert('Product name and price are required'); return; }
 
-        if (files.length > 0) {
-          Array.from(files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              images.push(e.target.result);
-              loaded++;
-              if (loaded === files.length) {
-                finishAddingProduct(name, brand, price, gender, stock, images);
-              }
-            };
-            reader.readAsDataURL(file);
+      const images = [];
+      const videos = [];
+      let filesLoaded = 0;
+      let totalFiles = photoFiles.length + videoFiles.length;
+
+      function finishProduct() {
+        if (filesLoaded === totalFiles) {
+          store.products.push({
+            id: Date.now(),
+            name,
+            brand,
+            price: parseInt(price),
+            gender,
+            stock: parseInt(stock),
+            images,
+            videos,
+            discount: null,
+            campaigns: []
           });
-        } else {
-          finishAddingProduct(name, brand, price, gender, stock, images);
+          localStorage.setItem('products', JSON.stringify(store.products));
+          renderProducts();
+          showAlert('Product added with ' + images.length + ' photos and ' + videos.length + ' videos!');
+          closeProductModal();
+          document.getElementById('productName').value = '';
+          document.getElementById('productPrice').value = '';
+          document.getElementById('productStock').value = '5';
+          document.getElementById('productImages').value = '';
+          document.getElementById('productVideos').value = '';
+          document.getElementById('productImagePreview').innerHTML = '';
+          document.getElementById('productVideoPreview').innerHTML = '';
         }
       }
-    }
 
-    function finishAddingProduct(name, brand, price, gender, stock, images) {
-      store.products.push({
-        id: Date.now(),
-        name,
-        brand,
-        price: parseInt(price),
-        gender,
-        stock: parseInt(stock),
-        images,
-        discount: null,
-        campaigns: []
+      // Load images
+      Array.from(photoFiles).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          images.push(e.target.result);
+          filesLoaded++;
+          finishProduct();
+        };
+        reader.readAsDataURL(file);
       });
-      localStorage.setItem('products', JSON.stringify(store.products));
-      renderProducts();
-      showAlert('Product added!');
-      closeProductModal();
-      document.getElementById('productName').value = '';
-      document.getElementById('productPrice').value = '';
-      document.getElementById('productStock').value = '5';
-      document.getElementById('productImages').value = '';
+
+      // Load videos
+      Array.from(videoFiles).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          videos.push(e.target.result);
+          filesLoaded++;
+          finishProduct();
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // If no files, still create product
+      if (totalFiles === 0) {
+        finishProduct();
+      }
     }
 
     function deleteProduct(i) {
@@ -981,35 +1131,50 @@
     function closeCampaignModal() { document.getElementById('campaignModal').classList.remove('active'); }
 
     function addCampaign() {
-      const name = document.getElementById('campaignName').value;
-      const desc = document.getElementById('campaignDesc').value;
+      const name = document.getElementById('campaignName').value.trim();
+      const desc = document.getElementById('campaignDesc').value.trim();
       const type = document.getElementById('campaignDiscountType').value;
-      const value = document.getElementById('campaignDiscountValue').value;
+      const value = document.getElementById('campaignDiscountValue').value.trim();
       const startDate = document.getElementById('campaignStartDate').value;
       const endDate = document.getElementById('campaignEndDate').value;
       const productSelect = document.getElementById('campaignProducts');
       const productIds = Array.from(productSelect.selectedOptions).map(o => parseInt(o.value));
 
-      if (name && value && startDate && endDate && productIds.length > 0) {
-        store.campaigns.push({
-          id: Date.now(),
-          name,
-          description: desc,
-          discount: { type, value: parseFloat(value) },
-          startDate,
-          endDate,
-          productIds
-        });
-        localStorage.setItem('campaigns', JSON.stringify(store.campaigns));
-        renderCampaigns();
-        showAlert('Campaign created!');
-        closeCampaignModal();
-        document.getElementById('campaignName').value = '';
-        document.getElementById('campaignDesc').value = '';
-        document.getElementById('campaignDiscountValue').value = '';
-        document.getElementById('campaignStartDate').value = '';
-        document.getElementById('campaignEndDate').value = '';
-      }
+      // Validation
+      if (!name) { alert('Campaign name is required'); return; }
+      if (!value || isNaN(value)) { alert('Discount value is required and must be a number'); return; }
+      if (!startDate) { alert('Start date is required'); return; }
+      if (!endDate) { alert('End date is required'); return; }
+      if (new Date(endDate) <= new Date(startDate)) { alert('End date must be after start date'); return; }
+      if (productIds.length === 0) { alert('Select at least one product'); return; }
+
+      // Create campaign
+      const newCampaign = {
+        id: Date.now(),
+        name: name,
+        description: desc,
+        discount: {
+          type: type,
+          value: parseFloat(value)
+        },
+        startDate: startDate,
+        endDate: endDate,
+        productIds: productIds
+      };
+
+      store.campaigns.push(newCampaign);
+      localStorage.setItem('campaigns', JSON.stringify(store.campaigns));
+      renderCampaigns();
+      showAlert('Campaign created successfully!');
+      closeCampaignModal();
+
+      // Clear form
+      document.getElementById('campaignName').value = '';
+      document.getElementById('campaignDesc').value = '';
+      document.getElementById('campaignDiscountValue').value = '';
+      document.getElementById('campaignStartDate').value = '';
+      document.getElementById('campaignEndDate').value = '';
+      document.getElementById('campaignProducts').selectedIndex = -1;
     }
 
     function deleteCampaign(i) {
@@ -1023,7 +1188,6 @@
       Array.from(e.target.files).forEach(file => {
         const reader = new FileReader();
         reader.onload = (event) => {
-          // Store gallery photos (for showcase)
           let photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
           photos.push(event.target.result);
           localStorage.setItem('mediaPhotos', JSON.stringify(photos));
@@ -1033,10 +1197,28 @@
       });
     }
 
+    function handleVideoUpload(e) {
+      Array.from(e.target.files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+          videos.push(event.target.result);
+          localStorage.setItem('mediaVideos', JSON.stringify(videos));
+          renderMediaVideos();
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
     function handleDrop(e, type) {
       e.preventDefault();
-      document.getElementById('photoInput').files = e.dataTransfer.files;
-      handlePhotoUpload({target: {files: e.dataTransfer.files}});
+      if (type === 'photo') {
+        document.getElementById('photoInput').files = e.dataTransfer.files;
+        handlePhotoUpload({target: {files: e.dataTransfer.files}});
+      } else if (type === 'video') {
+        document.getElementById('videoInput').files = e.dataTransfer.files;
+        handleVideoUpload({target: {files: e.dataTransfer.files}});
+      }
     }
 
     function renderMediaPhotos() {
@@ -1045,16 +1227,36 @@
       preview.innerHTML = photos.map((p, i) => `
         <div class="image-item">
           <img src="${p}">
-          <button class="image-remove" onclick="removeMedia(${i})">✕</button>
+          <button class="image-remove" onclick="removePhoto(${i})">✕</button>
         </div>
       `).join('');
     }
 
-    function removeMedia(i) {
+    function renderMediaVideos() {
+      const videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+      const preview = document.getElementById('videoPreview');
+      preview.innerHTML = videos.map((v, i) => `
+        <div class="image-item">
+          <video width="100%" height="100%" style="object-fit: cover;" controls>
+            <source src="${v}">
+          </video>
+          <button class="image-remove" onclick="removeVideo(${i})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function removePhoto(i) {
       let photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
       photos.splice(i, 1);
       localStorage.setItem('mediaPhotos', JSON.stringify(photos));
       renderMediaPhotos();
+    }
+
+    function removeVideo(i) {
+      let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+      videos.splice(i, 1);
+      localStorage.setItem('mediaVideos', JSON.stringify(videos));
+      renderMediaVideos();
     }
 
     function saveCompany() {
@@ -1091,6 +1293,74 @@
       alert.textContent = msg;
       document.querySelector('.content').insertBefore(alert, document.querySelector('.content').firstChild);
       setTimeout(() => alert.remove(), 2000);
+    }
+
+    function renderInventoryDashboard() {
+      const analytics = JSON.parse(localStorage.getItem('analytics')) || { views: {}, cartAdds: {} };
+
+      // Product Views
+      const viewsData = Object.entries(analytics.views || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      document.getElementById('viewsTable').innerHTML = viewsData.length > 0
+        ? viewsData.map(([productId, count]) => {
+          const product = store.products[parseInt(productId)];
+          return `<tr><td>${product ? product.name : 'Unknown'}</td><td>${count}</td></tr>`;
+        }).join('')
+        : '<tr><td colspan="2" style="text-align: center; color: var(--text-secondary);">No views yet</td></tr>';
+
+      // Cart Additions
+      const cartData = Object.entries(analytics.cartAdds || {}).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      document.getElementById('cartTable').innerHTML = cartData.length > 0
+        ? cartData.map(([productId, count]) => {
+          const product = store.products[parseInt(productId)];
+          return `<tr><td>${product ? product.name : 'Unknown'}</td><td>${count}</td></tr>`;
+        }).join('')
+        : '<tr><td colspan="2" style="text-align: center; color: var(--text-secondary);">No cart additions yet</td></tr>';
+
+      // Full Inventory Summary
+      const inventoryTable = document.getElementById('inventoryTable');
+      if (inventoryTable) {
+        inventoryTable.innerHTML = store.products.map((p, i) => {
+          const views = analytics.views[i] || 0;
+          const cartAdds = analytics.cartAdds[i] || 0;
+          const stockStatus = p.stock > 10 ? '✓ Good' : p.stock > 0 ? '⚠️ Low' : '❌ Out';
+          return `
+            <tr>
+              <td>${p.name}</td>
+              <td>${p.brand}</td>
+              <td>${p.stock}</td>
+              <td>${views}</td>
+              <td>${cartAdds}</td>
+              <td>${stockStatus}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    function clearAnalytics() {
+      if (confirm('Clear all analytics data? This cannot be undone.')) {
+        localStorage.removeItem('analytics');
+        renderInventoryDashboard();
+        showAlert('Analytics cleared!');
+      }
+    }
+
+    function exportAnalytics() {
+      const analytics = JSON.parse(localStorage.getItem('analytics')) || { views: {}, cartAdds: {} };
+      const data = {
+        timestamp: new Date().toISOString(),
+        products: store.products,
+        analytics: analytics
+      };
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `indoswiss-analytics-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showAlert('Analytics exported!');
     }
 
     function saveStoreIdentity() {
@@ -1150,6 +1420,7 @@
     renderDiscounts();
     renderCampaigns();
     renderMediaPhotos();
+    renderMediaVideos();
     document.getElementById('email').value = localStorage.getItem('email') || 'hello@indoswiss.com';
     document.getElementById('phone').value = localStorage.getItem('phone') || '+1-800-INDOSWISS';
     document.getElementById('supportEmail').value = localStorage.getItem('supportEmail') || 'support@indoswiss.com';

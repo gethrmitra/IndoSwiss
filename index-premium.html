@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IndoSwiss — Premium Luxury Watches</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --luxury-dark: #0a0a0a;
+      --luxury-bg: #f5f3f0;
+      --luxury-card: #ffffff;
+      --luxury-text: #1a1a1a;
+      --luxury-text-light: #6b6b6b;
+      --luxury-accent: #c9a961;
+      --luxury-accent-dark: #a68442;
+      --luxury-success: #2d5016;
+      --border-subtle: #e8e6e3;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --luxury-dark: #ffffff;
+        --luxury-bg: #1a1a1a;
+        --luxury-card: #252525;
+        --luxury-text: #f5f3f0;
+        --luxury-text-light: #b0b0b0;
+        --luxury-accent: #d4af37;
+        --luxury-accent-dark: #e8c547;
+        --border-subtle: #3a3a3a;
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--luxury-bg);
+      color: var(--luxury-text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 15px;
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 0.3px;
+    }
+
+    /* PREMIUM HEADER */
+    header {
+      background: var(--luxury-card);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-luxury {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--luxury-accent);
+      text-transform: uppercase;
+    }
+
+    .tagline-luxury {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--luxury-text-light);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    header .logo-section { display: flex; flex-direction: column; }
+
+    .header-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .cart-btn:hover { transform: scale(1.1); }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* NAVIGATION TABS */
+    .brand-nav {
+      background: var(--luxury-card);
+      border-bottom: 2px solid var(--border-subtle);
+      padding: 0 32px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+    }
+
+    .brand-tab {
+      padding: 18px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--luxury-text-light);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    .brand-tab:hover { color: var(--luxury-accent); }
+    .brand-tab.active {
+      color: var(--luxury-accent);
+      border-bottom-color: var(--luxury-accent);
+    }
+
+    /* FILTERS */
+    .filters-bar {
+      background: var(--luxury-card);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 32px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--luxury-text-light);
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      background: var(--luxury-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--luxury-text);
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--luxury-accent);
+      color: var(--luxury-accent);
+    }
+
+    .filter-btn.active {
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border-color: var(--luxury-accent);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 10px 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      background: var(--luxury-bg);
+      color: var(--luxury-text);
+      font-size: 13px;
+    }
+
+    /* MAIN CONTENT */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    .section-header {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    /* PRODUCT GRID */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .product-card {
+      background: var(--luxury-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--luxury-accent);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-gallery {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--luxury-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 64px;
+    }
+
+    .product-gallery img, .product-gallery video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-gallery img,
+    .product-card:hover .product-gallery video {
+      transform: scale(1.05);
+    }
+
+    .gallery-controls {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .gallery-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(4px);
+    }
+
+    .gallery-btn:hover { background: rgba(0, 0, 0, 0.9); }
+
+    .media-count {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(4px);
+    }
+
+    .campaign-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .product-info {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .product-brand {
+      font-size: 12px;
+      color: var(--luxury-text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .product-price {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .original-price {
+      font-size: 14px;
+      color: var(--luxury-text-light);
+      text-decoration: line-through;
+    }
+
+    .current-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--luxury-accent);
+      letter-spacing: 0.5px;
+    }
+
+    .stock-badge {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .stock-good { color: var(--luxury-success); }
+    .stock-low { color: #d97706; }
+    .stock-out { color: #dc2626; }
+
+    .product-cta {
+      padding: 14px 24px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      margin-top: auto;
+    }
+
+    .product-cta:hover {
+      background: var(--luxury-accent-dark);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--luxury-card);
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 64px;
+    }
+
+    .footer-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 48px;
+    }
+
+    .footer-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .footer-content {
+      font-size: 13px;
+      color: var(--luxury-text-light);
+      line-height: 1.8;
+    }
+
+    .footer-divider {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--luxury-text-light);
+      letter-spacing: 0.5px;
+    }
+
+    /* CART MODAL */
+    .cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .cart-modal.active { display: flex; }
+
+    .cart-panel {
+      background: var(--luxury-card);
+      width: 100%;
+      max-width: 420px;
+      height: 100%;
+      overflow-y: auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .cart-header {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--luxury-text);
+    }
+
+    .cart-items { flex: 1; margin-bottom: 24px; }
+
+    .cart-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; margin-bottom: 4px; }
+    .cart-item-details { color: var(--luxury-text-light); }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .cart-total {
+      background: var(--luxury-bg);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      margin-bottom: 12px;
+    }
+
+    .checkout-btn:hover {
+      background: var(--luxury-accent-dark);
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 16px; }
+      .brand-nav { padding: 0 16px; }
+      .filters-bar { padding: 16px; }
+      .container { padding: 32px 16px; }
+      .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+      .cart-panel { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <div class="logo-luxury">IndoSwiss</div>
+      <div class="tagline-luxury">Luxury Timepieces</div>
+    </div>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛍️
+        <span class="cart-count" id="cartCount" style="display: none;">0</span>
+      </button>
+      <button style="background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--luxury-accent);" onclick="window.open('admin.html', '_blank')">ADMIN</button>
+    </div>
+  </header>
+
+  <div class="brand-nav" id="brandTabs"></div>
+
+  <div class="filters-bar">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="filterByGender('All')">All</button>
+    <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
+    <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
+    <button class="filter-btn" onclick="filterByGender('Unisex')">Unisex</button>
+    <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
+  </div>
+
+  <div class="container">
+    <div class="section-header" id="sectionTitle">Curated Collections</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
+  <footer>
+    <div class="footer-section">
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">About IndoSwiss</div>
+        <div class="footer-content" id="aboutText">Discover authentic luxury watches from the world's finest manufacturers.</div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">Contact</div>
+        <div class="footer-content">
+          <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
+          <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">Shipping & Returns</div>
+        <div class="footer-content" id="shippingText">Free shipping on orders over $1,000. 30-day return window.</div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">FAQ</div>
+        <div class="footer-content" id="faqList"></div>
+      </div>
+    </div>
+    <div class="footer-divider">© 2024 IndoSwiss Luxury Watches. All Rights Reserved.</div>
+  </footer>
+
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-panel">
+      <div class="cart-header">
+        SHOPPING CART
+        <button class="close-btn" onclick="toggleCart()">✕</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <span>TOTAL</span>
+        <span id="totalAmount">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO CHECKOUT</button>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedBrand = null;
+    let selectedGender = 'All';
+    let searchTerm = '';
+
+    const store = {
+      brands: JSON.parse(localStorage.getItem('brands')) || [
+        { id: 'rolex', name: 'Rolex', country: 'Switzerland' },
+        { id: 'omega', name: 'Omega', country: 'Switzerland' }
+      ],
+      products: JSON.parse(localStorage.getItem('products')) || [],
+      discounts: JSON.parse(localStorage.getItem('discounts')) || [],
+      campaigns: JSON.parse(localStorage.getItem('campaigns')) || [],
+    };
+
+    function renderBrandTabs() {
+      const container = document.getElementById('brandTabs');
+      container.innerHTML = store.brands.map(b => `
+        <button class="brand-tab" onclick="selectBrand('${b.name}')">${b.name}</button>
+      `).join('');
+    }
+
+    function selectBrand(brand) {
+      selectedBrand = selectedBrand === brand ? null : brand;
+      document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
+      if (selectedBrand) {
+        event.target.classList.add('active');
+      }
+      filterProducts();
+      document.getElementById('sectionTitle').textContent = selectedBrand ? `${selectedBrand} Collection` : 'Curated Collections';
+    }
+
+    function filterByGender(gender) {
+      selectedGender = gender;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      filterProducts();
+    }
+
+    function filterProducts() {
+      searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const filtered = store.products.filter(p => {
+        const matchBrand = !selectedBrand || p.brand === selectedBrand;
+        const matchGender = selectedGender === 'All' || p.gender === selectedGender;
+        const matchSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.brand.toLowerCase().includes(searchTerm);
+        return matchBrand && matchGender && matchSearch;
+      });
+      renderProducts(filtered);
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      const now = new Date().getTime();
+
+      grid.innerHTML = products.map(p => {
+        const productIdx = store.products.indexOf(p);
+        const discount = store.discounts.find(d => d.productIdx === productIdx);
+        let displayPrice = p.price;
+        let originalPrice = null;
+
+        if (discount) {
+          if (discount.discount.type === 'percent') {
+            displayPrice = Math.round(p.price * (1 - discount.discount.value / 100));
+          } else {
+            displayPrice = p.price - discount.discount.value;
+          }
+          originalPrice = p.price;
+        }
+
+        const stockClass = p.stock > 10 ? 'stock-good' : p.stock > 0 ? 'stock-low' : 'stock-out';
+        const stockText = p.stock > 10 ? 'IN STOCK' : p.stock > 0 ? `${p.stock} LEFT` : 'SOLD OUT';
+        const firstImage = p.images?.[0] || null;
+
+        return `
+          <div class="product-card">
+            <div class="product-gallery">
+              ${firstImage ? `<img src="${firstImage}" alt="${p.name}">` : '⌚'}
+              ${p.images?.length > 1 ? `<div class="media-count">📸 ${p.images.length}</div>` : ''}
+              ${store.campaigns.find(c => new Date(c.endDate) > now && c.productIds.includes(productIdx)) ? `<div class="campaign-badge">EXCLUSIVE</div>` : ''}
+            </div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-brand">${p.brand}</div>
+              <div class="product-price">
+                ${originalPrice ? `<span class="original-price">$${originalPrice.toLocaleString()}</span>` : ''}
+                <span class="current-price">$${displayPrice.toLocaleString()}</span>
+              </div>
+              <div class="stock-badge ${stockClass}">${stockText}</div>
+              <button class="product-cta" onclick="addToCart(${productIdx})">ADD TO CART</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addToCart(idx) {
+      const product = store.products[idx];
+      const existing = cart.find(item => item.idx === idx);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ idx, name: product.name, price: product.price, qty: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartCount = document.getElementById('cartCount');
+      if (count > 0) {
+        cartCount.textContent = count;
+        cartCount.style.display = 'flex';
+      } else {
+        cartCount.style.display = 'none';
+      }
+
+      const cartItems = document.getElementById('cartItems');
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      cartItems.innerHTML = cart.length > 0
+        ? cart.map((item, i) => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-details">$${item.price.toLocaleString()} × ${item.qty}</div>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart(${i})">Remove</button>
+          </div>
+        `).join('')
+        : '<p style="color: var(--luxury-text-light); text-align: center; padding: 40px 0;">Your cart is empty</p>';
+
+      document.getElementById('totalAmount').textContent = '$' + total.toLocaleString();
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function toggleCart() {
+      document.getElementById('cartModal').classList.toggle('active');
+    }
+
+    function goToCheckout() {
+      if (cart.length > 0) {
+        window.location.href = 'checkout-premium.html';
+      }
+    }
+
+    function toggleFooterSection(e) {
+      if (e.target.classList.contains('footer-heading')) {
+        e.target.style.opacity = e.target.style.opacity === '0.6' ? '1' : '0.6';
+      }
+    }
+
+    // Initialize
+    renderBrandTabs();
+    filterProducts();
+    updateCartDisplay();
+
+    window.addEventListener('storage', () => location.reload());
+  </script>
+</body>
+</html>

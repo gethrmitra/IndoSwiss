@@ -1,0 +1,184 @@
+✅ INDOSWISS WATCH STORE — UPDATED WITH NEW FEATURES
+
+==============================================================================
+                    NEW FEATURES ADDED
+==============================================================================
+
+1️⃣ ADVERTISEMENT SECTION (24/7 Premium Showcase)
+   ✓ Premium Collection Showcase section between products and footer
+   ✓ Displays all uploaded photos in a responsive grid
+   ✓ Auto-updates when you upload new photos in admin
+   ✓ Runs 24/7 on the public store for constant advertisement
+   ✓ Beautiful gradient background for premium look
+
+2️⃣ COLLAPSIBLE FOOTER SECTIONS
+   ✓ About Us — Click to expand/collapse
+   ✓ Contact — Click to expand/collapse
+   ✓ Shipping & Returns — Click to expand/collapse
+   ✓ FAQ — Click to expand/collapse + expandable individual Q&As
+
+   How it works:
+   • Click section header (About Us, Contact, etc.) to toggle
+   • Arrow (▶) rotates to show if expanded or collapsed
+   • Content slides smoothly in/out
+   • Only visible when customer clicks on it
+   • Much cleaner footer layout!
+
+==============================================================================
+                    HOW TO USE NEW FEATURES
+==============================================================================
+
+ADVERTISEMENT SECTION:
+  1. Open admin.html
+  2. Go to 📸 Media section
+  3. Upload photos by dragging into "Showcase Photos" area
+  4. Photos appear instantly in the Premium Showcase on store
+  5. Runs 24/7 for advertisement — no need to manage it!
+
+COLLAPSIBLE FOOTER:
+  1. Customers visit your store
+  2. See footer with 4 section headers: About Us, Contact, Shipping, FAQ
+  3. Click any header to expand and see the content
+  4. Click again to collapse
+  5. Clean, organized footer that doesn't clutter the page!
+
+==============================================================================
+                    VISUAL LAYOUT
+==============================================================================
+
+BEFORE (Old):
+  Products Grid
+  └─ Footer (everything always visible)
+     ├─ About Us (always showing)
+     ├─ Contact (always showing)
+     ├─ Shipping (always showing)
+     └─ FAQ (always showing)
+
+AFTER (New):
+  Products Grid
+  ↓
+  Advertisement Section (24/7 showcase photos)
+  │
+  └─ Collapsible Footer (click to expand sections)
+     ├─ ℹ️ About Us ▶ (click to expand)
+     ├─ 📞 Contact ▶ (click to expand)
+     ├─ 📦 Shipping & Returns ▶ (click to expand)
+     └─ ❓ FAQ ▶ (click to expand)
+        └─ Individual FAQs also expandable ▶
+
+==============================================================================
+                    DEPLOYMENT
+==============================================================================
+
+Your store is already live at:
+  https://gethrmitra.github.io/IndoSwiss/
+
+The new features are automatically available! Just:
+  1. Upload photos in admin → they show in Advertisement Section
+  2. Customers see collapsible footer sections
+  3. Click headers to expand/collapse
+
+==============================================================================
+                    ADMIN WORKFLOW
+==============================================================================
+
+To use the Advertisement section:
+  1. Open admin.html
+  2. Go to 📸 Media section
+  3. Drag & drop premium watch photos
+  4. Open the store (click "👁️ View Store")
+  5. Scroll down after products → see Premium Collection Showcase
+  6. All your photos displayed beautifully!
+
+To add/edit footer content:
+  1. Open admin.html
+  2. Go to 🏢 Company section → Edit "About Us"
+  3. Go to 📋 Policies section → Edit "Shipping" & "Returns"
+  4. Go to 💬 Support section → Add FAQs
+  5. Store footer updates automatically!
+
+==============================================================================
+                    FEATURES CHECKLIST
+==============================================================================
+
+✅ Dashboard with analytics
+✅ Product images (multiple per product)
+✅ Discounts (% or fixed amount)
+✅ Festival campaigns with date ranges
+✅ Brand tabs for filtering
+✅ Gender filters (Mens/Womens/Unisex)
+✅ Product search
+✅ Shopping cart system
+✅ Stock management
+✅ Media gallery
+✅ Theme color customization
+✅ 📸 Advertisement Section (24/7 showcase) ← NEW!
+✅ 🎯 Collapsible Footer Sections ← NEW!
+✅ FAQ management
+✅ Company info management
+✅ Policy editors
+✅ Responsive design (mobile/tablet/desktop)
+✅ Dark/light theme support
+✅ Real-time admin ↔ store sync
+✅ Stripe payment integration ready
+
+==============================================================================
+                    EXAMPLE CUSTOMER EXPERIENCE
+==============================================================================
+
+Customer visits: https://gethrmitra.github.io/IndoSwiss/
+
+1. See header with store name + admin button
+2. See brand tabs (Rolex, Omega, etc.)
+3. See gender filters (All/Mens/Womens/Unisex)
+4. Browse product grid with images + prices
+5. See Campaign badges on active promotions
+6. Add products to cart
+7. Scroll down → See Premium Collection Showcase
+   (Beautiful display of your best photos/videos)
+8. Continue scrolling → See Footer with 4 sections:
+   ├─ ℹ️ About Us ▶ (collapsed by default)
+   ├─ 📞 Contact ▶ (collapsed by default)
+   ├─ 📦 Shipping & Returns ▶ (collapsed by default)
+   └─ ❓ FAQ ▶ (collapsed by default)
+9. Click "About Us" → expands to show your store story
+10. Click "Contact" → expands to show email/phone
+11. Click "Shipping" → expands to show policies
+12. Click "FAQ" → expands FAQ list
+13. Click individual FAQ questions → expands answers
+14. Click cart → checkout with Stripe
+
+==============================================================================
+                    YOUR STORE IS COMPLETE!
+==============================================================================
+
+Everything you requested is now implemented:
+
+✓ Photo uploads for products
+✓ Mens/Womens/Unisex sections
+✓ Discount & offer system
+✓ Campaign management
+✓ Brand tabs in header
+✓ Gender filters
+✓ Dashboard in admin
+✓ Full admin control
+✓ 24/7 Advertisement showcase (NEW!)
+✓ Collapsible footer sections (NEW!)
+
+Your store is live and ready for customers! 🚀
+
+==============================================================================
+                    NEXT STEPS
+==============================================================================
+
+1. Customize theme color
+2. Add watch brands
+3. Add products with images
+4. Upload premium photos for Advertisement
+5. Add FAQs and policies
+6. Create campaigns
+7. Share link with customers!
+
+Questions? All documentation is in your repo.
+
+Enjoy! 🌟

@@ -226,6 +226,8 @@
       overflow: hidden;
       transition: all 0.2s ease;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
 
     .product-card:hover {
@@ -233,7 +235,8 @@
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
-    .product-image {
+    .product-gallery {
+      position: relative;
       width: 100%;
       aspect-ratio: 1;
       background: var(--bg-tertiary);
@@ -241,14 +244,78 @@
       align-items: center;
       justify-content: center;
       font-size: 48px;
-      position: relative;
       overflow: hidden;
     }
 
-    .product-image img {
+    .product-gallery img, .product-gallery video {
       width: 100%;
       height: 100%;
       object-fit: cover;
+    }
+
+    .gallery-nav {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+
+    .gallery-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .gallery-dot.active {
+      background: white;
+      width: 8px;
+    }
+
+    .gallery-controls {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .gallery-btn {
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .gallery-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    .media-count {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
     }
 
     .campaign-badge {
@@ -361,6 +428,54 @@
       object-fit: cover;
     }
 
+    /* ADVERTISEMENT SECTION */
+    .advertisement-section {
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      padding: 32px;
+      margin: 48px 0;
+      border-radius: 8px;
+    }
+
+    .ad-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .media-carousel {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .media-card {
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      border: 1px solid var(--border);
+    }
+
+    .media-card:hover {
+      transform: scale(1.02);
+    }
+
+    .media-card img, .media-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* COLLAPSIBLE FOOTER */
     footer {
       background: var(--bg-secondary);
       border-top: 1px solid var(--border);
@@ -377,10 +492,42 @@
       margin-bottom: 32px;
     }
 
+    .footer-section {
+      cursor: pointer;
+    }
+
     .footer-section h3 {
       font-size: 14px;
       font-weight: 600;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .footer-section h3:hover {
+      color: var(--accent);
+    }
+
+    .toggle-icon {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 12px;
+    }
+
+    .footer-section.collapsed h3 .toggle-icon {
+      transform: rotate(-90deg);
+    }
+
+    .footer-section-content {
+      max-height: 1000px;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .footer-section.collapsed .footer-section-content {
+      max-height: 0;
     }
 
     .footer-section p {
@@ -409,21 +556,39 @@
       padding: 12px;
       border-radius: 6px;
       cursor: pointer;
+      user-select: none;
     }
 
     .faq-question {
       font-weight: 600;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .faq-toggle {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 12px;
+    }
+
+    .faq-item.expanded .faq-toggle {
+      transform: rotate(90deg);
     }
 
     .faq-answer {
       font-size: 12px;
       color: var(--text-secondary);
-      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      margin-top: 0;
     }
 
     .faq-item.expanded .faq-answer {
-      display: block;
+      max-height: 200px;
+      margin-top: 8px;
     }
 
     .footer-divider {
@@ -609,31 +774,54 @@
     <div class="products-grid" id="productsGrid"></div>
   </div>
 
+  <!-- ADVERTISEMENT SECTION (24/7 Premium Showcase) -->
+  <div class="advertisement-section">
+    <div class="ad-title">✨ Premium Collection Showcase</div>
+    <div class="media-carousel" id="adCarousel"></div>
+  </div>
+
+  <!-- MEDIA GALLERY -->
   <div class="media-section" id="mediaSection" style="display: none;">
     <div class="section-title">Brand Gallery</div>
     <div class="media-grid" id="mediaGrid"></div>
   </div>
 
+  <!-- FOOTER WITH COLLAPSIBLE SECTIONS -->
   <footer>
     <div class="footer-content">
-      <div class="footer-section">
-        <h3>About Us</h3>
-        <p id="aboutText">IndoSwiss is your premier destination for authentic luxury watches.</p>
-      </div>
-      <div class="footer-section">
-        <h3>Contact</h3>
-        <div class="contact-list">
-          <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
-          <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
+      <!-- ABOUT US (Collapsible) -->
+      <div class="footer-section collapsed" onclick="toggleFooterSection(event)">
+        <h3>ℹ️ About Us <span class="toggle-icon">▶</span></h3>
+        <div class="footer-section-content">
+          <p id="aboutText">IndoSwiss is your premier destination for authentic luxury watches.</p>
         </div>
       </div>
-      <div class="footer-section">
-        <h3>Shipping & Returns</h3>
-        <p id="shippingText">• Free shipping on orders over $1,000<br>• Domestic: 3-5 business days<br>• International: 7-14 business days</p>
+
+      <!-- CONTACT (Collapsible) -->
+      <div class="footer-section collapsed" onclick="toggleFooterSection(event)">
+        <h3>📞 Contact <span class="toggle-icon">▶</span></h3>
+        <div class="footer-section-content">
+          <div class="contact-list">
+            <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
+            <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
+          </div>
+        </div>
       </div>
-      <div class="footer-section">
-        <h3>FAQ</h3>
-        <div class="faq-list" id="faqList"></div>
+
+      <!-- SHIPPING & RETURNS (Collapsible) -->
+      <div class="footer-section collapsed" onclick="toggleFooterSection(event)">
+        <h3>📦 Shipping & Returns <span class="toggle-icon">▶</span></h3>
+        <div class="footer-section-content">
+          <p id="shippingText">• Free shipping on orders over $1,000<br>• Domestic: 3-5 business days<br>• International: 7-14 business days</p>
+        </div>
+      </div>
+
+      <!-- FAQ (Collapsible) -->
+      <div class="footer-section collapsed" onclick="toggleFooterSection(event)">
+        <h3>❓ FAQ <span class="toggle-icon">▶</span></h3>
+        <div class="footer-section-content">
+          <div class="faq-list" id="faqList"></div>
+        </div>
       </div>
     </div>
     <div class="footer-divider">© 2024 IndoSwiss Watches. All rights reserved.</div>
@@ -708,6 +896,7 @@
       renderBrandTabs();
       filterProducts();
       renderMediaGallery();
+      renderAdCarousel();
       renderFAQ();
       updateCartDisplay();
     }
@@ -761,7 +950,8 @@
       const now = new Date().getTime();
 
       grid.innerHTML = products.map(p => {
-        const discount = store.discounts.find(d => d.productIdx === store.products.indexOf(p));
+        const productIdx = store.products.indexOf(p);
+        const discount = store.discounts.find(d => d.productIdx === productIdx);
         let displayPrice = p.price;
         let originalPrice = null;
 
@@ -777,18 +967,43 @@
 
         const activeCampaign = store.campaigns.find(c =>
           new Date(c.endDate).getTime() > now &&
-          c.productIds.includes(store.products.indexOf(p))
+          c.productIds.includes(productIdx)
         );
 
         const stockStatus = p.stock > 10 ? 'in-stock' : p.stock > 0 ? 'low-stock' : 'out-of-stock';
         const stockText = p.stock > 10 ? 'In Stock' : p.stock > 0 ? `Low Stock (${p.stock})` : 'Out of Stock';
-        const image = p.images && p.images.length > 0 ? p.images[0] : null;
+
+        const allMedia = [
+          ...(p.images || []).map(img => ({ type: 'photo', src: img })),
+          ...(p.videos || []).map(vid => ({ type: 'video', src: vid }))
+        ];
+        const hasMedia = allMedia.length > 0;
+        const firstMedia = hasMedia ? allMedia[0] : null;
 
         return `
           <div class="product-card">
-            <div class="product-image">
-              ${image ? `<img src="${image}" alt="${p.name}">` : '⌚'}
+            <div class="product-gallery" id="gallery-${productIdx}">
+              ${firstMedia ? (
+                firstMedia.type === 'photo'
+                  ? `<img src="${firstMedia.src}" alt="${p.name}">`
+                  : `<video width="100%" height="100%" style="object-fit: cover;" controls><source src="${firstMedia.src}"></video>`
+              ) : '⌚'}
+
+              ${hasMedia ? `
+                <div class="media-count">📸 ${p.images?.length || 0} 🎥 ${p.videos?.length || 0}</div>
+              ` : ''}
+
               ${activeCampaign ? `<div class="campaign-badge">🎉 ${activeCampaign.name}</div>` : ''}
+
+              ${hasMedia && allMedia.length > 1 ? `
+                <div class="gallery-controls">
+                  <button class="gallery-btn" onclick="changeGallery('${productIdx}', -1)">❮</button>
+                  <button class="gallery-btn" onclick="changeGallery('${productIdx}', 1)">❯</button>
+                </div>
+                <div class="gallery-nav">
+                  ${allMedia.map((m, i) => `<div class="gallery-dot ${i === 0 ? 'active' : ''}" onclick="showGalleryItem('${productIdx}', ${i})"></div>`).join('')}
+                </div>
+              ` : ''}
             </div>
             <div class="product-info">
               <div class="product-name">${p.name}</div>
@@ -798,13 +1013,62 @@
                 <span class="${originalPrice ? 'discount-price' : 'current-price'}">$${displayPrice}</span>
               </div>
               <div class="stock-status ${stockStatus}">${stockText}</div>
-              <button class="btn-add-cart" onclick="addToCart(${store.products.indexOf(p)})">Add to Cart</button>
+              <button class="btn-add-cart" onclick="addToCart(${productIdx})">Add to Cart</button>
             </div>
           </div>
         `;
       }).join('');
 
       document.getElementById('mediaSection').style.display = filtered.length > 0 ? 'block' : 'none';
+    }
+
+    function changeGallery(productIdx, direction) {
+      const product = store.products[productIdx];
+      const allMedia = [
+        ...(product.images || []).map(img => ({ type: 'photo', src: img })),
+        ...(product.videos || []).map(vid => ({ type: 'video', src: vid }))
+      ];
+
+      let currentIdx = 0;
+      const gallery = document.getElementById(`gallery-${productIdx}`);
+      const dots = gallery?.querySelectorAll('.gallery-dot') || [];
+      dots.forEach((dot, i) => {
+        if (dot.classList.contains('active')) currentIdx = i;
+      });
+
+      let nextIdx = (currentIdx + direction + allMedia.length) % allMedia.length;
+      showGalleryItem(productIdx, nextIdx);
+    }
+
+    function showGalleryItem(productIdx, itemIdx) {
+      const product = store.products[productIdx];
+      const allMedia = [
+        ...(product.images || []).map(img => ({ type: 'photo', src: img })),
+        ...(product.videos || []).map(vid => ({ type: 'video', src: vid }))
+      ];
+
+      if (itemIdx >= 0 && itemIdx < allMedia.length) {
+        const media = allMedia[itemIdx];
+        const gallery = document.getElementById(`gallery-${productIdx}`);
+        if (gallery) {
+          const mediaContent = media.type === 'photo'
+            ? `<img src="${media.src}" alt="Photo ${itemIdx + 1}">`
+            : `<video width="100%" height="100%" style="object-fit: cover;" controls><source src="${media.src}"></video>`;
+
+          gallery.innerHTML = `
+            ${mediaContent}
+            <div class="media-count">📸 ${product.images?.length || 0} 🎥 ${product.videos?.length || 0}</div>
+            ${store.campaigns.find(c => new Date(c.endDate).getTime() > new Date().getTime() && c.productIds.includes(productIdx)) ? `<div class="campaign-badge">🎉 Campaign</div>` : ''}
+            <div class="gallery-controls">
+              <button class="gallery-btn" onclick="changeGallery('${productIdx}', -1)">❮</button>
+              <button class="gallery-btn" onclick="changeGallery('${productIdx}', 1)">❯</button>
+            </div>
+            <div class="gallery-nav">
+              ${allMedia.map((m, i) => `<div class="gallery-dot ${i === itemIdx ? 'active' : ''}" onclick="showGalleryItem('${productIdx}', ${i})"></div>`).join('')}
+            </div>
+          `;
+        }
+      }
     }
 
     function renderMediaGallery() {
@@ -820,16 +1084,47 @@
       const container = document.getElementById('faqList');
       container.innerHTML = faqs.length > 0
         ? faqs.map((f, i) => `
-          <div class="faq-item" onclick="toggleFAQ(${i})">
-            <div class="faq-question">Q: ${f.question}</div>
-            <div class="faq-answer">A: ${f.answer}</div>
+          <div class="faq-item" onclick="toggleFAQ(event)">
+            <div class="faq-question"><span class="faq-toggle">▶</span> ${f.question}</div>
+            <div class="faq-answer">${f.answer}</div>
           </div>
         `).join('')
         : '<div style="color: var(--text-secondary); font-size: 12px;">No FAQs yet</div>';
     }
 
-    function toggleFAQ(i) {
-      event.currentTarget.classList.toggle('expanded');
+    function toggleFAQ(e) {
+      e.stopPropagation();
+      e.currentTarget.classList.toggle('expanded');
+    }
+
+    function toggleFooterSection(e) {
+      if (e.target.classList.contains('toggle-icon')) return;
+      const section = e.currentTarget;
+      section.classList.toggle('collapsed');
+    }
+
+    function renderAdCarousel() {
+      const photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
+      const videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+      const carousel = document.getElementById('adCarousel');
+
+      const allMedia = [
+        ...photos.map(p => ({ type: 'photo', src: p })),
+        ...videos.map(v => ({ type: 'video', src: v }))
+      ];
+
+      if (allMedia.length === 0) {
+        carousel.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 32px;">Upload photos and videos in admin to display here 24/7</p>';
+        return;
+      }
+
+      carousel.innerHTML = allMedia.map((m, i) => {
+        if (m.type === 'photo') {
+          return `<div class="media-card"><img src="${m.src}" alt="Premium Watch ${i + 1}" loading="lazy"></div>`;
+        } else {
+          return `<div class="media-card"><video width="100%" height="100%" style="object-fit: cover;" controls><source src="${m.src}"></video></div>`;
+        }
+      }).join('');
     }
 
     function addToCart(productIdx) {
