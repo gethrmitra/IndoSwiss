@@ -412,6 +412,17 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-heading::after {
+      content: '▼';
+      font-size: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .footer-heading.active::after {
+      transform: rotate(180deg);
     }
 
     .footer-content {
@@ -617,8 +628,8 @@
 <body>
   <header>
     <div class="logo-section">
-      <div class="logo-luxury">IndoSwiss</div>
-      <div class="tagline-luxury">Luxury Timepieces</div>
+      <div class="logo-luxury" id="headerLogoText">IndoSwiss</div>
+      <div class="tagline-luxury" id="headerTaglineText">Luxury Timepieces</div>
     </div>
     <div class="header-actions">
       <button class="cart-btn" onclick="toggleCart()">
@@ -629,7 +640,19 @@
     </div>
   </header>
 
-  <!-- FRONT PAGE AD BANNER -->
+  <!-- TOP NAVIGATION: Brand tabs -->
+  <div class="brand-nav" id="brandTabs"></div>
+
+  <!-- SECOND ROW: Gender filters -->
+  <div class="filters-bar">
+    <button class="filter-btn active" onclick="filterByGender('All')">All</button>
+    <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
+    <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
+    <button class="filter-btn" onclick="filterByGender('Unisex')">Universal</button>
+    <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
+  </div>
+
+  <!-- MEDIA: Front page ad banner -->
   <div class="ad-banner">
     <div class="ad-slides" id="adSlides"></div>
     <div class="ad-nav">
@@ -637,17 +660,6 @@
       <button class="ad-next" onclick="nextAd()">&#9654;</button>
     </div>
     <div class="ad-dots" id="adDots"></div>
-  </div>
-
-  <div class="brand-nav" id="brandTabs"></div>
-
-  <div class="filters-bar">
-    <span class="filter-label">Filter:</span>
-    <button class="filter-btn active" onclick="filterByGender('All')">All</button>
-    <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
-    <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
-    <button class="filter-btn" onclick="filterByGender('Unisex')">Universal</button>
-    <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
   </div>
 
   <div class="container">
@@ -658,26 +670,29 @@
   <footer>
     <div class="footer-section">
       <div>
-        <div class="footer-heading" onclick="toggleFooterSection(event)">About IndoSwiss</div>
-        <div class="footer-content" id="aboutText">Discover authentic luxury watches from the world's finest manufacturers.</div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">
+          <span id="dynamicStoreName">IndoSwiss</span>
+          <span id="dynamicTagline" style="font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-left: 8px;">Luxury Timepieces</span>
+        </div>
+        <div class="footer-content" id="aboutText" style="display: none;">Discover authentic luxury watches from the world's finest manufacturers.</div>
       </div>
       <div>
         <div class="footer-heading" onclick="toggleFooterSection(event)">Contact</div>
-        <div class="footer-content">
+        <div class="footer-content" style="display: none;">
           <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
           <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
         </div>
       </div>
       <div>
         <div class="footer-heading" onclick="toggleFooterSection(event)">Shipping & Returns</div>
-        <div class="footer-content" id="shippingText">Free shipping on orders over $1,000. 30-day return window.</div>
+        <div class="footer-content" id="shippingText" style="display: none;">Free shipping on orders over $1,000. 30-day return window.</div>
       </div>
       <div>
         <div class="footer-heading" onclick="toggleFooterSection(event)">FAQ</div>
-        <div class="footer-content" id="faqList"></div>
+        <div class="footer-content" id="faqList" style="display: none;"></div>
       </div>
     </div>
-    <div class="footer-divider">© 2024 IndoSwiss Luxury Watches. All Rights Reserved.</div>
+    <div class="footer-divider">© <span id="dynamicYear">2024</span> <span id="dynamicStoreName">IndoSwiss</span> Luxury Watches. All Rights Reserved.</div>
   </footer>
 
   <div class="cart-modal" id="cartModal">
@@ -849,8 +864,27 @@
     }
 
     function toggleFooterSection(e) {
-      if (e.target.classList.contains('footer-heading')) {
-        e.target.style.opacity = e.target.style.opacity === '0.6' ? '1' : '0.6';
+      const heading = e.target.classList.contains('footer-heading')
+        ? e.target
+        : e.target.closest('.footer-heading');
+      if (!heading) return;
+
+      const content = heading.nextElementSibling;
+      const allContents = document.querySelectorAll('.footer-content');
+      const allHeadings = document.querySelectorAll('.footer-heading');
+
+      if (!content) return;
+      const isOpen = content.style.display !== 'none';
+
+      // Close everything first (accordion behaviour)
+      allContents.forEach(c => { c.style.display = 'none'; });
+      allHeadings.forEach(h => h.classList.remove('active'));
+
+      // Toggle the clicked one
+      if (!isOpen) {
+        content.style.display = 'block';
+        content.style.marginTop = '8px';
+        heading.classList.add('active');
       }
     }
 
@@ -859,9 +893,60 @@
     filterProducts();
     updateCartDisplay();
 
+    // Load dynamic company info
+    const storedCompanyName = localStorage.getItem('companyName') || 'IndoSwiss';
+    const storedTagline = localStorage.getItem('companyTagline') || 'Luxury Timepieces';
+    const storedLogo = localStorage.getItem('companyLogo');
+
+    // Update header logo name and tagline
+    document.getElementById('headerLogoText').textContent = storedCompanyName;
+    document.getElementById('headerTaglineText').textContent = storedTagline;
+
+    // Insert logo image in header if available
+    if (storedLogo) {
+      const logoSection = document.querySelector('.logo-section');
+      const logoImg = document.createElement('img');
+      logoImg.src = storedLogo;
+      logoImg.style.height = '24px';
+      logoImg.style.marginRight = '12px';
+      logoSection.insertBefore(logoImg, logoSection.firstChild);
+    }
+
+    // Update footer
+    document.getElementById('dynamicStoreName').textContent = storedCompanyName;
+    document.getElementById('dynamicTagline').textContent = storedTagline;
+    document.getElementById('dynamicYear').textContent = new Date().getFullYear();
+
+    // IndexedDB helpers to read videos stored in the media database (admin stores large videos here)
+    const MEDIA_DB = 'indoswissMedia';
+    function idbOpen() {
+      return new Promise((resolve, reject) => {
+        try {
+          const req = indexedDB.open(MEDIA_DB, 1);
+          req.onupgradeneeded = () => {
+            if (!req.result.objectStoreNames.contains('files')) {
+              req.result.createObjectStore('files');
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      });
+    }
+    function idbGet(key) {
+      return idbOpen().then(db => new Promise((resolve, reject) => {
+        try {
+          const tx = db.transaction('files', 'readonly');
+          const req = tx.objectStore('files').get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      }));
+    }
+
     // Initialize ad banner
     let currentAdSlide = 0;
-    function renderAdBanner() {
+    async function renderAdBanner() {
       const ads = JSON.parse(localStorage.getItem('ads')) || [];
       const adSlides = document.getElementById('adSlides');
       const adDots = document.getElementById('adDots');
@@ -879,17 +964,32 @@
         return;
       }
 
-      // Render slides
-      adSlides.innerHTML = ads.map(ad => {
+      // Render slides with async video loading
+      adSlides.innerHTML = ads.map((ad, index) => {
         if (ad.type === 'image') {
           return `<div class="ad-slide"><img src="${ad.data}" alt="Advertisement"></div>`;
         } else {
-          return `<div class="ad-slide"><video src="${ad.data}" autoplay muted loop playsinline style="width: 100%;"></video></div>`;
+          return `<div class="ad-slide"><video id="ad-video-${index}" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video></div>`;
         }
       }).join('');
 
       // Render dots
       adDots.innerHTML = ads.map((_, i) => `<div class="ad-dot ${i === 0 ? 'active' : ''}" onclick="goToAdSlide(${i})"></div>`).join('');
+
+      // Load videos (from localStorage data URL or browser IndexedDB)
+      for (let i = 0; i < ads.length; i++) {
+        if (ads[i].type !== 'video') continue;
+        const el = document.getElementById('ad-video-' + i);
+        if (!el) continue;
+        try {
+          if (typeof ads[i].data === 'string' && ads[i].data.startsWith('idb:')) {
+            const blob = await idbGet(ads[i].data.slice(4));
+            if (blob) el.src = URL.createObjectURL(blob);
+          } else {
+            el.src = ads[i].data;
+          }
+        } catch (e) { /* skip broken video */ }
+      }
 
       // Auto-rotate if more than 1 ad
       if (ads.length > 1) {

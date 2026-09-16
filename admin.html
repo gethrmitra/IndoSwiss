@@ -673,21 +673,31 @@
         <div class="page-title">Company Information</div>
         <div class="grid-2">
           <div class="card">
-            <h3>Basic Info</h3>
+            <h3>Company Details</h3>
             <div class="form-group">
-              <label>Email</label>
-              <input type="email" id="email" value="hello@indoswiss.com">
+              <label>Company Name</label>
+              <input type="text" id="companyName" value="IndoSwiss">
             </div>
             <div class="form-group">
-              <label>Phone</label>
-              <input type="tel" id="phone" value="+1-800-INDOSWISS">
+              <label>Tagline</label>
+              <input type="text" id="companyTagline" value="Luxury Timepieces">
             </div>
-            <button class="btn btn-primary" onclick="saveCompany()">Save</button>
+            <div class="form-group">
+              <label>Logo (Optional)</label>
+              <div class="upload-area" onclick="document.getElementById('logoInput').click()">
+                Drop logo or click
+                <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this.files)">
+              </div>
+              <div id="logoPreview" style="margin-top: 12px; text-align: center; min-height: 80px; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border); border-radius: 4px; color: var(--text-light);">
+                No logo uploaded
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveCompany()">Save Company Info</button>
           </div>
           <div class="card">
             <h3>About Us</h3>
             <textarea id="aboutText">IndoSwiss is your premier destination for authentic luxury watches.</textarea>
-            <button class="btn btn-primary" style="margin-top: 12px;" onclick="saveAbout()">Save</button>
+            <button class="btn btn-primary" style="margin-top: 12px;" onclick="saveAbout()">Save About Us</button>
           </div>
         </div>
       </div>
@@ -1214,29 +1224,146 @@
     }
 
     function handlePhotoUpload(e) {
-      Array.from(e.target.files).forEach(file => {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+
+      // Process each file with validation
+      files.forEach(file => {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          showAlert('Please select a valid image file');
+          return;
+        }
+
+        // Validate file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          showAlert('Image file is too large. Maximum size is 10MB');
+          return;
+        }
+
         const reader = new FileReader();
         reader.onload = (event) => {
-          let photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
-          photos.push(event.target.result);
-          localStorage.setItem('mediaPhotos', JSON.stringify(photos));
-          renderMediaPhotos();
+          try {
+            let photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
+            photos.push(event.target.result);
+            localStorage.setItem('mediaPhotos', JSON.stringify(photos));
+            renderMediaPhotos();
+            showAlert('Photo uploaded successfully!');
+          } catch (error) {
+            showAlert('Error saving photo: ' + error.message);
+          }
         };
+
+        reader.onerror = () => {
+          showAlert('Error reading image file');
+        };
+
         reader.readAsDataURL(file);
       });
+
+      // Reset input to allow same file re-upload if needed
+      e.target.value = '';
+    }
+
+    // ===== IndexedDB media store (allows large videos that won't fit in localStorage) =====
+    const MEDIA_DB = 'indoswissMedia';
+    function idbOpen() {
+      return new Promise((resolve, reject) => {
+        try {
+          const req = indexedDB.open(MEDIA_DB, 1);
+          req.onupgradeneeded = () => {
+            if (!req.result.objectStoreNames.contains('files')) {
+              req.result.createObjectStore('files');
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      });
+    }
+    function idbPut(key, blob) {
+      return idbOpen().then(db => new Promise((resolve, reject) => {
+        try {
+          const tx = db.transaction('files', 'readwrite');
+          tx.objectStore('files').put(blob, key);
+          tx.oncomplete = () => resolve(key);
+          tx.onerror = () => reject(tx.error);
+        } catch (e) { reject(e); }
+      }));
+    }
+    function idbGet(key) {
+      return idbOpen().then(db => new Promise((resolve, reject) => {
+        try {
+          const tx = db.transaction('files', 'readonly');
+          const req = tx.objectStore('files').get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      }));
+    }
+    function idbDelete(key) {
+      return idbOpen().then(db => new Promise((resolve, reject) => {
+        try {
+          const tx = db.transaction('files', 'readwrite');
+          tx.objectStore('files').delete(key);
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        } catch (e) { reject(e); }
+      }));
     }
 
     function handleVideoUpload(e) {
-      Array.from(e.target.files).forEach(file => {
+      const files = Array.from(e.target.files);
+      if (files.length === 0) return;
+
+      // Process each file with validation
+      files.forEach(async file => {
+        // Validate file type
+        if (!file.type.startsWith('video/')) {
+          showAlert('Please select a valid video file');
+          return;
+        }
+
+        // Large videos → browser IndexedDB (localStorage cannot hold them)
+        if (file.size > 3 * 1024 * 1024) {
+          const key = 'mediaVideo-' + Date.now() + '-' + Math.floor(Math.random() * 1e6);
+          try {
+            await idbPut(key, file);
+            let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+            videos.push('idb:' + key);
+            localStorage.setItem('mediaVideos', JSON.stringify(videos));
+            renderMediaVideos();
+            showAlert('Video uploaded successfully (stored in browser database).');
+          } catch (error) {
+            showAlert('Could not save video: ' + error.message + '. Try a smaller/short video.');
+          }
+          return;
+        }
+
+        // Small videos → localStorage (kept as before)
         const reader = new FileReader();
         reader.onload = (event) => {
-          let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
-          videos.push(event.target.result);
-          localStorage.setItem('mediaVideos', JSON.stringify(videos));
-          renderMediaVideos();
+          try {
+            let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
+            videos.push(event.target.result);
+            localStorage.setItem('mediaVideos', JSON.stringify(videos));
+            renderMediaVideos();
+            showAlert('Video uploaded successfully!');
+          } catch (error) {
+            showAlert('Video is too large for browser storage. Use a shorter video.');
+          }
         };
+
+        reader.onerror = () => {
+          showAlert('Error reading video file');
+        };
+
         reader.readAsDataURL(file);
       });
+
+      // Reset input to allow same file re-upload if needed
+      e.target.value = '';
     }
 
     function handleDrop(e, type) {
@@ -1261,17 +1388,29 @@
       `).join('');
     }
 
-    function renderMediaVideos() {
+    async function renderMediaVideos() {
       const videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
       const preview = document.getElementById('videoPreview');
       preview.innerHTML = videos.map((v, i) => `
         <div class="image-item">
-          <video width="100%" height="100%" style="object-fit: cover;" controls>
-            <source src="${v}">
-          </video>
+          <video id="mv-${i}" width="100%" height="100%" style="object-fit: cover;" controls></video>
           <button class="image-remove" onclick="removeVideo(${i})">✕</button>
         </div>
       `).join('');
+
+      // Load each video (from localStorage data URL or browser IndexedDB)
+      for (let i = 0; i < videos.length; i++) {
+        const el = document.getElementById('mv-' + i);
+        if (!el) continue;
+        try {
+          if (typeof videos[i] === 'string' && videos[i].startsWith('idb:')) {
+            const blob = await idbGet(videos[i].slice(4));
+            if (blob) el.src = URL.createObjectURL(blob);
+          } else {
+            el.src = videos[i];
+          }
+        } catch (e) { /* skip broken video */ }
+      }
     }
 
     function removePhoto(i) {
@@ -1283,7 +1422,10 @@
 
     function removeVideo(i) {
       let videos = JSON.parse(localStorage.getItem('mediaVideos')) || [];
-      videos.splice(i, 1);
+      const removed = videos.splice(i, 1)[0];
+      if (typeof removed === 'string' && removed.startsWith('idb:')) {
+        idbDelete(removed.slice(4)).catch(() => {});
+      }
       localStorage.setItem('mediaVideos', JSON.stringify(videos));
       renderMediaVideos();
     }
@@ -1292,27 +1434,69 @@
       const formData = Array.from(files);
       if (formData.length === 0) return;
 
-      let ads = JSON.parse(localStorage.getItem('ads')) || [];
+      // Process each file with validation
+      formData.forEach(async file => {
+        // Validate file type matches the selected type
+        const isVideo = type === 'video';
+        if (isVideo && !file.type.startsWith('video/')) {
+          showAlert('Please select a valid video file');
+          return;
+        }
+        if (!isVideo && !file.type.startsWith('image/')) {
+          showAlert('Please select a valid image file');
+          return;
+        }
 
-      // Process each file
-      formData.forEach(file => {
+        // Validate file size (videos 50MB, images 10MB)
+        const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+          showAlert(isVideo ? 'Video is too large. Maximum is 50MB.' : 'Image is too large. Maximum is 10MB.');
+          return;
+        }
+
+        let ads = JSON.parse(localStorage.getItem('ads')) || [];
+
+        // Large videos → browser IndexedDB (localStorage cannot hold them)
+        if (isVideo && file.size > 3 * 1024 * 1024) {
+          const key = 'ad-' + Date.now() + '-' + Math.floor(Math.random() * 1e6);
+          try {
+            await idbPut(key, file);
+            ads.push({ id: Date.now() + Math.random(), type: type, data: 'idb:' + key });
+            localStorage.setItem('ads', JSON.stringify(ads));
+            renderAdList();
+            showAdAdded(ads.length);
+          } catch (error) {
+            showAlert('Could not save ad: ' + error.message + '. Try a smaller/short video.');
+          }
+          return;
+        }
+
+        // Small files → localStorage (kept as before)
         const reader = new FileReader();
         reader.onload = (event) => {
-          ads.push({
-            id: Date.now() + Math.random(),
-            type: type, // 'image' or 'video'
-            data: event.target.result
-          });
-
-          localStorage.setItem('ads', JSON.stringify(ads));
-          renderAdList();
-          showAdAdded(ads.length);
+          try {
+            ads.push({
+              id: Date.now() + Math.random(),
+              type: type, // 'image' or 'video'
+              data: event.target.result
+            });
+            localStorage.setItem('ads', JSON.stringify(ads));
+            renderAdList();
+            showAdAdded(ads.length);
+          } catch (error) {
+            showAlert('Media is too large for browser storage. Use smaller/short videos.');
+          }
         };
+
+        reader.onerror = () => {
+          showAlert('Error reading file');
+        };
+
         reader.readAsDataURL(file);
       });
     }
 
-    function renderAdList() {
+    async function renderAdList() {
       const ads = JSON.parse(localStorage.getItem('ads')) || [];
       const adList = document.getElementById('adList');
       const adEmpty = document.getElementById('adEmpty');
@@ -1330,15 +1514,33 @@
         <div class="image-item" style="margin: 8px;">
           ${ad.type === 'image' ?
             `<img src="${ad.data}" alt="Ad ${i + 1}">` :
-            `<video width="100%" height="100%" style="object-fit: cover;" controls><source src="${ad.data}"></video>`}
+            `<video id="ad-v-${i}" width="100%" height="100%" style="object-fit: cover;" controls></video>`}
           <button class="image-remove" onclick="removeAd(${i})">✕</button>
         </div>
       `).join('');
+
+      // Load each video (from localStorage data URL or browser IndexedDB)
+      for (let i = 0; i < ads.length; i++) {
+        if (ads[i].type !== 'video') continue;
+        const el = document.getElementById('ad-v-' + i);
+        if (!el) continue;
+        try {
+          if (typeof ads[i].data === 'string' && ads[i].data.startsWith('idb:')) {
+            const blob = await idbGet(ads[i].data.slice(4));
+            if (blob) el.src = URL.createObjectURL(blob);
+          } else {
+            el.src = ads[i].data;
+          }
+        } catch (e) { /* skip broken video */ }
+      }
     }
 
     function removeAd(i) {
       let ads = JSON.parse(localStorage.getItem('ads')) || [];
-      ads.splice(i, 1);
+      const removed = ads.splice(i, 1)[0];
+      if (removed && typeof removed.data === 'string' && removed.data.startsWith('idb:')) {
+        idbDelete(removed.data.slice(4)).catch(() => {});
+      }
       localStorage.setItem('ads', JSON.stringify(ads));
       renderAdList();
       showAdRemoved();
@@ -1352,11 +1554,45 @@
       showAlert('Ad removed from front page rotation.');
     }
 
+    function handleLogoUpload(files) {
+      if (!files || files.length === 0) return;
+      const file = files[0];
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showAlert('Please upload an image file for the logo');
+        return;
+      }
+
+      // Validate file size (max 2MB for logo)
+      if (file.size > 2 * 1024 * 1024) {
+        showAlert('Logo file too large. Maximum size is 2MB');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        localStorage.setItem('companyLogo', e.target.result);
+        document.getElementById('logoPreview').innerHTML = `<img src="${e.target.result}" alt="Company Logo" style="max-width: 150px; max-height: 80px;">`;
+        showAlert('Logo uploaded successfully!');
+      };
+      reader.onerror = function() {
+        showAlert('Error uploading logo');
+      };
+      reader.readAsDataURL(file);
+    }
+
     function saveCompany() {
+      const companyName = document.getElementById('companyName').value || 'IndoSwiss';
+      const companyTagline = document.getElementById('companyTagline').value || 'Luxury Timepieces';
       const email = document.getElementById('email').value;
       const phone = document.getElementById('phone').value;
+
+      localStorage.setItem('companyName', companyName);
+      localStorage.setItem('companyTagline', companyTagline);
       localStorage.setItem('email', email);
       localStorage.setItem('phone', phone);
+
       showAlert('Company info saved!');
     }
 
@@ -1522,6 +1758,12 @@
     document.getElementById('aboutText').value = localStorage.getItem('aboutText') || 'IndoSwiss is your premier destination for authentic luxury watches.';
     document.getElementById('shippingText').value = localStorage.getItem('shippingText') || '• Free shipping on orders over $1,000\n• Domestic: 3-5 business days\n• International: 7-14 business days';
     document.getElementById('returnsText').value = localStorage.getItem('returnsText') || '• 30-day return window\n• Items in original condition\n• Free return shipping for defects';
+    document.getElementById('companyName').value = localStorage.getItem('companyName') || 'IndoSwiss';
+    document.getElementById('companyTagline').value = localStorage.getItem('companyTagline') || 'Luxury Timepieces';
+    const savedLogo = localStorage.getItem('companyLogo');
+    if (savedLogo) {
+      document.getElementById('logoPreview').innerHTML = `<img src="${savedLogo}" alt="Company Logo" style="max-width: 150px; max-height: 80px;">`;
+    }
     document.getElementById('storeName').value = localStorage.getItem('storeName') || 'INDOSWISS';
     document.getElementById('storeTagline').value = localStorage.getItem('storeTagline') || 'Premium Watches';
     const savedTheme = localStorage.getItem('themeColor') || '#b8860b';

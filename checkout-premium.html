@@ -472,6 +472,13 @@
               <div class="error-message" id="emailError"></div>
             </div>
           </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
+              <div class="error-message" id="phoneError"></div>
+            </div>
+          </div>
         </div>
 
         <!-- SHIPPING DETAILS -->
@@ -507,9 +514,17 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="zip">ZIP/Postal Code</label>
-              <input type="text" id="zip" name="zip" placeholder="10001" required>
+              <label for="pin">PIN Code</label>
+              <input type="text" id="pin" name="pin" placeholder="110001" required>
+              <div class="error-message" id="pinError"></div>
             </div>
+            <div class="form-group">
+              <label for="landmark">Landmark (Optional)</label>
+              <input type="text" id="landmark" name="landmark" placeholder="Near Metro Station, Opposite Mall">
+            </div>
+          </div>
+
+          <div class="form-row full">
             <div class="form-group">
               <label for="country">Country</label>
               <select id="country" name="country" required>
@@ -527,21 +542,50 @@
 
         <!-- PAYMENT DETAILS -->
         <div class="form-section">
-          <div class="form-section-title">Payment Information</div>
+          <div class="form-section-title">Payment Method</div>
 
           <div class="security-info">
             Your payment information is encrypted and secure
           </div>
 
-          <div class="form-group" style="margin-bottom: 16px;">
-            <label for="cardName">Cardholder Name</label>
-            <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
-          </div>
-
-          <div class="form-group">
-            <label>Card Details</label>
-            <div id="card-element" class="StripeElement"></div>
-            <div class="error-message" id="cardError"></div>
+          <!-- Payment Method Selection -->
+          <div style="display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 8px;">
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+              <input type="radio" id="paymentCard" name="paymentMethod" value="card" checked>
+              <label for="paymentCard" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">💳 Credit/Debit Card</label>
+              <div id="cardDetails" style="display: block;">
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="cardName">Cardholder Name</label>
+                  <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                  <label>Card Details</label>
+                  <div id="card-element" class="StripeElement"></div>
+                  <div class="error-message" id="cardError"></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+              <input type="radio" id="paymentUpi" name="paymentMethod" value="upi">
+              <label for="paymentUpi" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">📱 UPI</label>
+              <div id="upiDetails" style="display: none;">
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label for="upiId">UPI ID</label>
+                  <input type="text" id="upiId" name="upiId" placeholder="yourname@upi" required>
+                  <p style="color: var(--luxury-text-light); font-size: 12px; margin-top: 4px;">Enter your UPI ID (e.g., name@bank)</p>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="flex: 1; min-width: 200px;">
+              <input type="radio" id="paymentCod" name="paymentMethod" value="cod">
+              <label for="paymentCod" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">💵 Cash on Delivery</label>
+              <div id="codDetails" style="display: none;">
+                <p style="color: var(--luxury-text-light); font-size: 14px; margin-bottom: 8px;">Pay cash when your order arrives</p>
+                <div style="padding: 12px; background: var(--luxury-bg); border: 1px solid var(--border-subtle);">
+                  Available for orders under ₹5,000
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -634,6 +678,25 @@
       }
     });
 
+    // Handle payment method selection
+    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        // Hide all payment details
+        document.getElementById('cardDetails').style.display = 'none';
+        document.getElementById('upiDetails').style.display = 'none';
+        document.getElementById('codDetails').style.display = 'none';
+
+        // Show selected payment details
+        if (this.value === 'card') {
+          document.getElementById('cardDetails').style.display = 'block';
+        } else if (this.value === 'upi') {
+          document.getElementById('upiDetails').style.display = 'block';
+        } else if (this.value === 'cod') {
+          document.getElementById('codDetails').style.display = 'block';
+        }
+      });
+    });
+
     // Render order items in sidebar
     function renderOrderSummary() {
       const itemsContainer = document.getElementById('orderItems');
@@ -678,7 +741,31 @@
     document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      // Get form values
       const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const fullName = document.getElementById('fullName').value;
+      const address = document.getElementById('address').value;
+      const city = document.getElementById('city').value;
+      const state = document.getElementById('state').value;
+      const pin = document.getElementById('pin').value;
+      const landmark = document.getElementById('landmark').value;
+      const country = document.getElementById('country').value;
+      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      const upiId = document.getElementById('upiId').value;
+
+      // Validate required fields
+      if (!email || !phone || !fullName || !address || !city || !state || !pin || !country) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      // Validate UPI if selected
+      if (paymentMethod === 'upi' && !upiId) {
+        alert('Please enter your UPI ID');
+        return;
+      }
+
       const loading = document.getElementById('loading');
       const submitBtn = document.getElementById('submitBtn');
 
@@ -686,25 +773,30 @@
       submitBtn.disabled = true;
 
       try {
-        // Create payment method
-        const { paymentMethod, error } = await stripe.createPaymentMethod({
-          type: 'card',
-          card: cardElement,
-          billing_details: {
-            name: document.getElementById('cardName').value,
-            email: email,
-            address: {
-              line1: document.getElementById('address').value,
-              city: document.getElementById('city').value,
-              state: document.getElementById('state').value,
-              postal_code: document.getElementById('zip').value,
-              country: document.getElementById('country').value
-            }
-          }
-        });
+        let stripePaymentId = null;
 
-        if (error) {
-          throw new Error(error.message);
+        // Process Stripe payment if card selected
+        if (paymentMethod === 'card') {
+          const { paymentMethod: stripePm, error } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+            billing_details: {
+              name: document.getElementById('cardName').value,
+              email: email,
+              address: {
+                line1: address,
+                city: city,
+                state: state,
+                postal_code: pin,
+                country: country
+              }
+            }
+          });
+
+          if (error) {
+            throw new Error(error.message);
+          }
+          stripePaymentId = stripePm.id;
         }
 
         // Calculate total
@@ -738,7 +830,18 @@
           })),
           total: total,
           email: email,
-          paymentMethod: paymentMethod.id
+          phone: phone,
+          fullName: fullName,
+          address: address,
+          city: city,
+          state: state,
+          pin: pin,
+          landmark: landmark,
+          country: country,
+          paymentMethod: paymentMethod,
+          stripePaymentId: stripePaymentId,
+          upiId: upiId || null,
+          status: 'pending'
         };
 
         let orders = JSON.parse(localStorage.getItem('orders')) || [];
