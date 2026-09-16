@@ -734,6 +734,14 @@
       `).join('');
     }
 
+    function scrollToCollections() {
+      const container = document.querySelector('.container');
+      if (container && window.innerWidth <= 768) {
+        // On mobile, scroll so the user sees the navigated section
+        window.scrollTo({ top: container.offsetTop - 10, behavior: 'smooth' });
+      }
+    }
+
     function selectBrand(brand) {
       selectedBrand = selectedBrand === brand ? null : brand;
       document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
@@ -742,6 +750,8 @@
       }
       filterProducts();
       document.getElementById('sectionTitle').textContent = selectedBrand ? `${selectedBrand} Collection` : 'Curated Collections';
+      updateHash();
+      scrollToCollections();
     }
 
     function filterByGender(gender) {
@@ -749,6 +759,8 @@
       document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
       filterProducts();
+      updateHash();
+      scrollToCollections();
     }
 
     function filterProducts() {
@@ -888,8 +900,46 @@
       }
     }
 
+    // Apply filters from URL hash (e.g. #brand=Rolex&gender=Mens) on page load
+    function applyHashFilters() {
+      const hash = window.location.hash.replace(/^#/, '');
+      const params = new URLSearchParams(hash);
+      const brand = params.get('brand');
+      const gender = params.get('gender');
+
+      if (brand && store.brands.some(b => b.name === brand)) {
+        selectedBrand = brand;
+      }
+      if (gender && ['Mens', 'Womens', 'Unisex'].includes(gender)) {
+        selectedGender = gender;
+      }
+    }
+
+    function updateHash() {
+      const params = new URLSearchParams();
+      if (selectedBrand) params.set('brand', selectedBrand);
+      if (selectedGender !== 'All') params.set('gender', selectedGender);
+      const newHash = params.toString() ? '#' + params.toString() : '';
+      if (window.location.hash !== newHash) {
+        history.replaceState(null, '', newHash || window.location.pathname);
+      }
+    }
+
     // Initialize
+    applyHashFilters();
     renderBrandTabs();
+
+    // Highlight active brand + gender tabs from the URL hash
+    if (selectedBrand) {
+      document.querySelectorAll('.brand-tab').forEach(btn => {
+        if (btn.textContent === selectedBrand) btn.classList.add('active');
+      });
+      document.getElementById('sectionTitle').textContent = `${selectedBrand} Collection`;
+    }
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      if (btn.textContent === selectedGender) btn.classList.add('active');
+    });
+
     filterProducts();
     updateCartDisplay();
 
