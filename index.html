@@ -1,79 +1,907 @@
-<title>Chronos Store</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #fafaf9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IndoSwiss — Premium Watch Store</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --bg-primary: #f9f7f4;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f5f3f1;
+      --text-primary: #1a1a1a;
+      --text-secondary: #666666;
+      --text-tertiary: #999999;
+      --border: #e8e6e4;
+      --accent: #b8860b;
+      --accent-dark: #92660d;
+      --success: #10b981;
+      --error: #dc2626;
+    }
 
-  .container {
-    text-align: center;
-    padding: 40px;
-    max-width: 500px;
-  }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg-primary: #0f0e0d;
+        --bg-secondary: #1a1a19;
+        --bg-tertiary: #2a2a28;
+        --text-primary: #fafaf9;
+        --text-secondary: #a8a8a8;
+        --text-tertiary: #777777;
+        --border: #3a3a38;
+        --accent: #d4af37;
+        --accent-dark: #e8c547;
+      }
+    }
 
-  h1 {
-    font-size: 48px;
-    margin: 0 0 16px 0;
-    color: #1a1a1a;
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
 
-  p {
-    color: #666;
-    margin-bottom: 32px;
-    font-size: 16px;
-  }
+    header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  .buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-  a {
-    padding: 14px 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    display: inline-block;
-  }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
 
-  .btn-store {
-    background: #b8860b;
-    color: white;
-  }
+    .tagline {
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
 
-  .btn-store:hover {
-    background: #92660d;
-    transform: translateY(-2px);
-  }
+    .header-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
 
-  .btn-admin {
-    background: #f5f5f4;
-    color: #1a1a1a;
-    border: 2px solid #b8860b;
-  }
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+    }
 
-  .btn-admin:hover {
-    background: #efefef;
-    border-color: #92660d;
-    transform: translateY(-2px);
-  }
-</style>
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--accent);
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+    }
 
-<div class="container">
-  <h1>⌚ Chronos</h1>
-  <p>Premium luxury watches from the world's finest brands</p>
-  <div class="buttons">
-    <a href="store.html" class="btn-store">🛍️ View Store</a>
-    <a href="admin-master.html" class="btn-admin">🔐 Admin Panel</a>
+    .admin-btn {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .admin-btn:hover {
+      background: var(--border);
+    }
+
+    .brand-tabs {
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      gap: 2px;
+      overflow-x: auto;
+    }
+
+    .brand-tab {
+      padding: 16px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 14px;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .brand-tab:hover {
+      color: var(--accent);
+    }
+
+    .brand-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .filters {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      max-width: 300px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .product-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-image {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .campaign-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--success);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .product-info {
+      padding: 16px;
+    }
+
+    .product-name {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .product-brand {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .product-price {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      margin-bottom: 12px;
+    }
+
+    .original-price {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      text-decoration: line-through;
+    }
+
+    .discount-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .current-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .stock-status {
+      font-size: 12px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .in-stock { color: var(--success); }
+    .low-stock { color: #f59e0b; }
+    .out-of-stock { color: var(--error); }
+
+    .btn-add-cart {
+      width: 100%;
+      padding: 10px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .btn-add-cart:hover {
+      background: var(--accent-dark);
+    }
+
+    .media-section {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      margin-top: 32px;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .media-item {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .media-item img, .media-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      margin-top: 48px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    .footer-section h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .footer-section p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .faq-item {
+      background: var(--bg-tertiary);
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .faq-question {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .faq-answer {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .faq-item.expanded .faq-answer {
+      display: block;
+    }
+
+    .footer-divider {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .modal.active { display: flex; }
+
+    .cart-sidebar {
+      background: var(--bg-secondary);
+      width: 100%;
+      max-width: 400px;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .cart-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .cart-item {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .cart-item-price {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .remove-item {
+      background: var(--error);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .cart-total {
+      background: var(--bg-tertiary);
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: right;
+    }
+
+    .total-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .total-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .checkout-btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .continue-shopping {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 16px; }
+      .brand-tabs { padding: 0 16px; }
+      .filters { padding: 12px 16px; }
+      .container { padding: 16px; }
+      .products-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+      .cart-sidebar { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <div class="logo" id="storeName">INDOSWISS</div>
+      <div class="tagline" id="storeTagline">Premium Watches</div>
+    </div>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒
+        <span class="cart-count" id="cartCount" style="display: none;">0</span>
+      </button>
+      <button class="admin-btn" onclick="window.open('admin.html', '_blank')">Admin</button>
+    </div>
+  </header>
+
+  <div class="brand-tabs" id="brandTabs"></div>
+
+  <div class="filters">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="filterByGender('All')">All</button>
+    <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
+    <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
+    <button class="filter-btn" onclick="filterByGender('Unisex')">Unisex</button>
+    <input type="text" class="search-box" id="searchBox" placeholder="Search products..." onkeyup="filterProducts()">
   </div>
-</div>
+
+  <div class="container">
+    <div class="section-title" id="sectionTitle">All Products</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
+  <div class="media-section" id="mediaSection" style="display: none;">
+    <div class="section-title">Brand Gallery</div>
+    <div class="media-grid" id="mediaGrid"></div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About Us</h3>
+        <p id="aboutText">IndoSwiss is your premier destination for authentic luxury watches.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contact</h3>
+        <div class="contact-list">
+          <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
+          <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h3>Shipping & Returns</h3>
+        <p id="shippingText">• Free shipping on orders over $1,000<br>• Domestic: 3-5 business days<br>• International: 7-14 business days</p>
+      </div>
+      <div class="footer-section">
+        <h3>FAQ</h3>
+        <div class="faq-list" id="faqList"></div>
+      </div>
+    </div>
+    <div class="footer-divider">© 2024 IndoSwiss Watches. All rights reserved.</div>
+  </footer>
+
+  <div id="cartModal" class="modal">
+    <div class="cart-sidebar">
+      <div class="cart-header">
+        <div class="cart-title">Shopping Cart</div>
+        <button class="close-btn" onclick="toggleCart()">✕</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <div class="total-label">TOTAL</div>
+        <div class="total-amount" id="totalAmount">$0</div>
+      </div>
+      <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
+      <button class="continue-shopping" onclick="toggleCart()">Continue Shopping</button>
+    </div>
+  </div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedBrand = null;
+    let selectedGender = 'All';
+    let searchTerm = '';
+
+    const store = {
+      brands: JSON.parse(localStorage.getItem('brands')) || [
+        { id: 'rolex', name: 'Rolex', country: 'Switzerland' },
+        { id: 'omega', name: 'Omega', country: 'Switzerland' }
+      ],
+      products: JSON.parse(localStorage.getItem('products')) || [],
+      discounts: JSON.parse(localStorage.getItem('discounts')) || [],
+      campaigns: JSON.parse(localStorage.getItem('campaigns')) || [],
+      company: {
+        name: localStorage.getItem('storeName') || 'INDOSWISS',
+        tagline: localStorage.getItem('storeTagline') || 'Premium Watches',
+        email: localStorage.getItem('email') || 'hello@indoswiss.com',
+        phone: localStorage.getItem('phone') || '+1-800-INDOSWISS'
+      }
+    };
+
+    function applyCustomTheme() {
+      const theme = localStorage.getItem('themeColor');
+      if (theme) {
+        const root = document.documentElement;
+        root.style.setProperty('--accent', theme);
+        const darkVariant = adjustBrightness(theme, -0.15);
+        root.style.setProperty('--accent-dark', darkVariant);
+      }
+    }
+
+    function adjustBrightness(hex, percent) {
+      const num = parseInt(hex.replace("#", ""), 16);
+      const amt = Math.round(2.55 * percent);
+      const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+      const G = Math.max(0, Math.min(255, (num >> 8 & 0x00FF) + amt));
+      const B = Math.max(0, Math.min(255, (num & 0x0000FF) + amt));
+      return "#" + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+    }
+
+    function initializeStore() {
+      applyCustomTheme();
+      document.getElementById('storeName').textContent = store.company.name;
+      document.getElementById('storeTagline').textContent = store.company.tagline;
+      document.getElementById('companyEmail').textContent = store.company.email;
+      document.getElementById('companyPhone').textContent = store.company.phone;
+      document.getElementById('aboutText').textContent = localStorage.getItem('aboutText') || 'IndoSwiss is your premier destination for authentic luxury watches.';
+      document.getElementById('shippingText').textContent = localStorage.getItem('shippingText') || '• Free shipping on orders over $1,000\n• Domestic: 3-5 business days\n• International: 7-14 business days';
+
+      renderBrandTabs();
+      filterProducts();
+      renderMediaGallery();
+      renderFAQ();
+      updateCartDisplay();
+    }
+
+    function renderBrandTabs() {
+      const container = document.getElementById('brandTabs');
+      container.innerHTML = store.brands.map(b => `
+        <button class="brand-tab" onclick="selectBrand('${b.name}')">
+          ${b.name}
+        </button>
+      `).join('');
+    }
+
+    function selectBrand(brand) {
+      selectedBrand = selectedBrand === brand ? null : brand;
+      document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
+      if (selectedBrand) {
+        event.target.classList.add('active');
+      }
+      filterProducts();
+      updateSectionTitle();
+    }
+
+    function updateSectionTitle() {
+      const title = selectedBrand ? `${selectedBrand} Watches` : 'All Products';
+      document.getElementById('sectionTitle').textContent = title;
+    }
+
+    function filterByGender(gender) {
+      selectedGender = gender;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      filterProducts();
+    }
+
+    function filterProducts() {
+      searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+      const filtered = store.products.filter(p => {
+        const matchBrand = !selectedBrand || p.brand === selectedBrand;
+        const matchGender = selectedGender === 'All' || p.gender === selectedGender;
+        const matchSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.brand.toLowerCase().includes(searchTerm);
+        return matchBrand && matchGender && matchSearch;
+      });
+
+      renderProducts(filtered);
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      const now = new Date().getTime();
+
+      grid.innerHTML = products.map(p => {
+        const discount = store.discounts.find(d => d.productIdx === store.products.indexOf(p));
+        let displayPrice = p.price;
+        let originalPrice = null;
+
+        if (discount) {
+          if (discount.discount.type === 'percent') {
+            const reduction = (p.price * discount.discount.value) / 100;
+            displayPrice = Math.round(p.price - reduction);
+          } else {
+            displayPrice = p.price - discount.discount.value;
+          }
+          originalPrice = p.price;
+        }
+
+        const activeCampaign = store.campaigns.find(c =>
+          new Date(c.endDate).getTime() > now &&
+          c.productIds.includes(store.products.indexOf(p))
+        );
+
+        const stockStatus = p.stock > 10 ? 'in-stock' : p.stock > 0 ? 'low-stock' : 'out-of-stock';
+        const stockText = p.stock > 10 ? 'In Stock' : p.stock > 0 ? `Low Stock (${p.stock})` : 'Out of Stock';
+        const image = p.images && p.images.length > 0 ? p.images[0] : null;
+
+        return `
+          <div class="product-card">
+            <div class="product-image">
+              ${image ? `<img src="${image}" alt="${p.name}">` : '⌚'}
+              ${activeCampaign ? `<div class="campaign-badge">🎉 ${activeCampaign.name}</div>` : ''}
+            </div>
+            <div class="product-info">
+              <div class="product-name">${p.name}</div>
+              <div class="product-brand">${p.brand}</div>
+              <div class="product-price">
+                ${originalPrice ? `<span class="original-price">$${originalPrice}</span>` : ''}
+                <span class="${originalPrice ? 'discount-price' : 'current-price'}">$${displayPrice}</span>
+              </div>
+              <div class="stock-status ${stockStatus}">${stockText}</div>
+              <button class="btn-add-cart" onclick="addToCart(${store.products.indexOf(p)})">Add to Cart</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('mediaSection').style.display = filtered.length > 0 ? 'block' : 'none';
+    }
+
+    function renderMediaGallery() {
+      const photos = JSON.parse(localStorage.getItem('mediaPhotos')) || [];
+      const container = document.getElementById('mediaGrid');
+      container.innerHTML = photos.map(p => `
+        <div class="media-item"><img src="${p}" alt="Gallery"></div>
+      `).join('') || '<p style="grid-column: 1/-1; color: var(--text-secondary);">No photos uploaded yet</p>';
+    }
+
+    function renderFAQ() {
+      const faqs = JSON.parse(localStorage.getItem('faqs')) || [];
+      const container = document.getElementById('faqList');
+      container.innerHTML = faqs.length > 0
+        ? faqs.map((f, i) => `
+          <div class="faq-item" onclick="toggleFAQ(${i})">
+            <div class="faq-question">Q: ${f.question}</div>
+            <div class="faq-answer">A: ${f.answer}</div>
+          </div>
+        `).join('')
+        : '<div style="color: var(--text-secondary); font-size: 12px;">No FAQs yet</div>';
+    }
+
+    function toggleFAQ(i) {
+      event.currentTarget.classList.toggle('expanded');
+    }
+
+    function addToCart(productIdx) {
+      const product = store.products[productIdx];
+      const existing = cart.find(item => item.idx === productIdx);
+
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ idx: productIdx, name: product.name, price: product.price, qty: 1 });
+      }
+
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+      showCartNotification();
+    }
+
+    function updateCartDisplay() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartCount = document.getElementById('cartCount');
+      if (count > 0) {
+        cartCount.textContent = count;
+        cartCount.style.display = 'flex';
+      } else {
+        cartCount.style.display = 'none';
+      }
+
+      const cartItems = document.getElementById('cartItems');
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      cartItems.innerHTML = cart.length > 0
+        ? cart.map((item, i) => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-price">$${item.price} × ${item.qty}</div>
+            </div>
+            <button class="remove-item" onclick="removeFromCart(${i})">✕</button>
+          </div>
+        `).join('')
+        : '<p style="color: var(--text-secondary); text-align: center;">Cart is empty</p>';
+
+      document.getElementById('totalAmount').textContent = '$' + total.toLocaleString();
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function toggleCart() {
+      document.getElementById('cartModal').classList.toggle('active');
+    }
+
+    function goToCheckout() {
+      if (cart.length > 0) {
+        window.location.href = 'checkout.html';
+      }
+    }
+
+    function showCartNotification() {
+      const count = document.getElementById('cartCount');
+      count.style.transform = 'scale(1.2)';
+      setTimeout(() => { count.style.transform = 'scale(1)'; }, 200);
+    }
+
+    window.addEventListener('storage', () => {
+      location.reload();
+    });
+
+    initializeStore();
+  </script>
+</body>
+</html>
