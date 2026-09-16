@@ -1,0 +1,989 @@
+<title>Chronos Admin — Watch Inventory Manager</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #f9f7f4;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f5f3f1;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border: #e8e6e4;
+    --accent: #b8860b;
+    --accent-dark: #92660d;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #dc2626;
+    --info: #3b82f6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-primary: #0f0e0d;
+      --bg-secondary: #1a1a19;
+      --bg-tertiary: #2a2a28;
+      --text-primary: #fafaf9;
+      --text-secondary: #a8a8a8;
+      --text-tertiary: #777777;
+      --border: #3a3a38;
+      --accent: #d4af37;
+      --accent-dark: #e8c547;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100%;
+    display: flex;
+  }
+
+  .sidebar {
+    width: 250px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+  }
+
+  .nav-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .nav-item:hover {
+    color: var(--accent);
+    background: var(--bg-tertiary);
+  }
+
+  .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--bg-tertiary);
+  }
+
+  .nav-icon {
+    margin-right: 10px;
+  }
+
+  .main {
+    margin-left: 250px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-tertiary);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-tertiary);
+  }
+
+  .upload-area:hover {
+    border-color: var(--accent);
+    background: var(--bg-secondary);
+  }
+
+  .upload-area.dragover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .upload-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .upload-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  .file-input {
+    display: none;
+  }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .preview-item {
+    position: relative;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 1;
+  }
+
+  .preview-item img,
+  .preview-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .preview-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--error);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .preview-item:hover .preview-remove {
+    opacity: 1;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-family: inherit;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dark);
+  }
+
+  .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table thead {
+    background: var(--bg-tertiary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+  }
+
+  .table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .table tbody tr:hover {
+    background: var(--bg-tertiary);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-success {
+    background: #d1fae5;
+    color: #059669;
+  }
+
+  .badge-warning {
+    background: #fef3c7;
+    color: #d97706;
+  }
+
+  .badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-tertiary);
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  .alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .alert-error {
+    background: #fee2e2;
+    color: #7f1d1d;
+    border: 1px solid #fecaca;
+  }
+
+  .alert-info {
+    background: #dbeafe;
+    color: #1e3a8a;
+    border: 1px solid #bfdbfe;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 0;
+      overflow: hidden;
+    }
+
+    .main {
+      margin-left: 0;
+    }
+
+    .grid-2 {
+      grid-template-columns: 1fr;
+    }
+
+    .page-title {
+      font-size: 24px;
+    }
+  }
+</style>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">CHRONOS</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" onclick="switchSection('dashboard')"><span class="nav-icon">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="switchSection('products')"><span class="nav-icon">⌚</span>Products</div>
+    <div class="nav-item" onclick="switchSection('inventory')"><span class="nav-icon">📦</span>Inventory</div>
+    <div class="nav-item" onclick="switchSection('media')"><span class="nav-icon">📸</span>Media Manager</div>
+    <div class="nav-item" onclick="switchSection('analytics')"><span class="nav-icon">📈</span>Analytics</div>
+    <div class="nav-item" onclick="switchSection('settings')"><span class="nav-icon">⚙️</span>Settings</div>
+  </nav>
+</div>
+
+<div class="main">
+  <header>
+    <div class="header-title" id="headerTitle">Dashboard</div>
+    <div class="header-actions">
+      <div class="user-profile">
+        <span>👤</span>
+        <span>Admin</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- Dashboard Section -->
+    <div id="dashboard" class="section active">
+      <div class="page-title">Dashboard</div>
+      <div class="page-subtitle">Welcome to Chronos Admin Panel</div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Products</div>
+          <div class="stat-value" id="totalProducts">42</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Inventory</div>
+          <div class="stat-value" id="totalInventory">158</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Media Files</div>
+          <div class="stat-value" id="mediaCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Low Stock Items</div>
+          <div class="stat-value" id="lowStock">3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div id="products" class="section">
+      <div class="page-title">Products</div>
+      <div class="page-subtitle">Manage watch products and details</div>
+
+      <button class="btn btn-primary" onclick="openProductModal()">+ Add New Product</button>
+
+      <div class="card" style="margin-top: 24px;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Brand</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable">
+            <tr>
+              <td>Submariner Date</td>
+              <td>Rolex</td>
+              <td>$9,500</td>
+              <td>5</td>
+              <td><span class="badge badge-success">Active</span></td>
+              <td><button class="btn btn-secondary btn-small">Edit</button></td>
+            </tr>
+            <tr>
+              <td>Seamaster Aqua Terra</td>
+              <td>Omega</td>
+              <td>$6,500</td>
+              <td>8</td>
+              <td><span class="badge badge-success">Active</span></td>
+              <td><button class="btn btn-secondary btn-small">Edit</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Inventory Section -->
+    <div id="inventory" class="section">
+      <div class="page-title">Inventory Management</div>
+      <div class="page-subtitle">Track and update watch stock levels</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Update Stock</h3>
+          <div class="form-group">
+            <label>Select Product</label>
+            <select>
+              <option>Select a product...</option>
+              <option>Submariner Date - Rolex</option>
+              <option>Seamaster Aqua Terra - Omega</option>
+              <option>Tank Francaise - Cartier</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Current Stock</label>
+            <input type="number" value="5" disabled>
+          </div>
+          <div class="form-group">
+            <label>New Stock Quantity</label>
+            <input type="number" placeholder="Enter quantity" value="5">
+          </div>
+          <div class="form-group">
+            <label>Notes</label>
+            <textarea placeholder="Add stock update notes..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="showAlert('Stock updated successfully', 'success')">Update Stock</button>
+        </div>
+
+        <div class="card">
+          <h3>Low Stock Alert</h3>
+          <div style="padding: 20px 0;">
+            <div style="margin-bottom: 16px;">
+              <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Daytona - Rolex</div>
+              <div class="badge badge-warning">Only 2 left</div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Cartier Tank</div>
+              <div class="badge badge-warning">Only 1 left</div>
+            </div>
+            <div>
+              <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Aquanaut - Patek Philippe</div>
+              <div class="badge badge-warning">Stock depleted</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Media Manager Section -->
+    <div id="media" class="section">
+      <div class="page-title">Media Manager</div>
+      <div class="page-subtitle">Upload and manage product photos and videos</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Upload Product Photos</h3>
+          <div class="upload-area" ondrop="handleDrop(event, 'photos')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('photoInput').click()">
+            <div class="upload-icon">📸</div>
+            <div class="upload-text">Drop photos here or click to select</div>
+            <div class="upload-hint">PNG, JPG, WebP (Max 10MB each)</div>
+            <input type="file" id="photoInput" class="file-input" accept="image/*" multiple onchange="handlePhotoUpload(event)">
+          </div>
+          <div id="photoPreview" class="preview-grid"></div>
+        </div>
+
+        <div class="card">
+          <h3>Upload Product Videos</h3>
+          <div class="upload-area" ondrop="handleDrop(event, 'videos')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" onclick="document.getElementById('videoInput').click()">
+            <div class="upload-icon">🎬</div>
+            <div class="upload-text">Drop videos here or click to select</div>
+            <div class="upload-hint">MP4, WebM (Max 100MB each)</div>
+            <input type="file" id="videoInput" class="file-input" accept="video/*" multiple onchange="handleVideoUpload(event)">
+          </div>
+          <div id="videoPreview" class="preview-grid"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px;">
+        <h3>Media Library</h3>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="mediaTable">
+            <tr>
+              <td>rolex-submariner-1.jpg</td>
+              <td><span class="badge badge-info">Image</span></td>
+              <td>2.4 MB</td>
+              <td>2 hours ago</td>
+              <td><button class="btn btn-secondary btn-small">Delete</button></td>
+            </tr>
+            <tr>
+              <td>omega-seamaster-demo.mp4</td>
+              <td><span class="badge badge-info">Video</span></td>
+              <td>45.2 MB</td>
+              <td>1 day ago</td>
+              <td><button class="btn btn-secondary btn-small">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Analytics Section -->
+    <div id="analytics" class="section">
+      <div class="page-title">Analytics</div>
+      <div class="page-subtitle">View sales and inventory analytics</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Best Selling Brands</h3>
+          <div style="padding: 20px 0;">
+            <div style="margin-bottom: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Rolex</span>
+                <strong>45%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: 45%; background: var(--accent);"></div>
+              </div>
+            </div>
+            <div style="margin-bottom: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Omega</span>
+                <strong>28%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: 28%; background: var(--accent);"></div>
+              </div>
+            </div>
+            <div style="margin-bottom: 12px; font-size: 13px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span>Cartier</span>
+                <strong>15%</strong>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                <div style="height: 100%; width: 15%; background: var(--accent);"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Monthly Sales</h3>
+          <div style="padding: 20px 0; text-align: center;">
+            <div class="stat-value" style="margin-bottom: 8px;">$285,400</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">+12% from last month</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Section -->
+    <div id="settings" class="section">
+      <div class="page-title">Settings</div>
+      <div class="page-subtitle">Manage store configuration</div>
+
+      <div class="card" style="max-width: 600px;">
+        <h3>General Settings</h3>
+        <div class="form-group">
+          <label>Store Name</label>
+          <input type="text" value="Chronos - Premium Watches">
+        </div>
+        <div class="form-group">
+          <label>Store Currency</label>
+          <select>
+            <option selected>USD ($)</option>
+            <option>EUR (€)</option>
+            <option>GBP (£)</option>
+            <option>INR (₹)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="email" value="admin@chronos.com">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" value="+1-800-CHRONOS">
+        </div>
+        <button class="btn btn-primary" onclick="showAlert('Settings saved successfully', 'success')">Save Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Modal -->
+<div id="productModal" class="modal">
+  <div class="modal-content" style="position: relative;">
+    <button class="modal-close" onclick="closeProductModal()">✕</button>
+    <div class="modal-header">Add New Product</div>
+    <div class="form-group">
+      <label>Product Name</label>
+      <input type="text" placeholder="e.g., Submariner Date">
+    </div>
+    <div class="form-group">
+      <label>Brand</label>
+      <select>
+        <option>Select brand...</option>
+        <option>Rolex</option>
+        <option>Omega</option>
+        <option>Cartier</option>
+        <option>Patek Philippe</option>
+        <option>Tag Heuer</option>
+        <option>Breitling</option>
+        <option>Longines</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Price</label>
+      <input type="number" placeholder="$">
+    </div>
+    <div class="form-group">
+      <label>Gender</label>
+      <select>
+        <option>Select...</option>
+        <option>Mens</option>
+        <option>Womens</option>
+        <option>Unisex</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Initial Stock</label>
+      <input type="number" placeholder="0">
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <button class="btn btn-primary" onclick="closeProductModal(); showAlert('Product added successfully', 'success')">Add Product</button>
+      <button class="btn btn-secondary" onclick="closeProductModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let mediaFiles = {
+    photos: [],
+    videos: []
+  };
+
+  function switchSection(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    event.target.closest('.nav-item').classList.add('active');
+
+    const titles = {
+      'dashboard': 'Dashboard',
+      'products': 'Products',
+      'inventory': 'Inventory Management',
+      'media': 'Media Manager',
+      'analytics': 'Analytics',
+      'settings': 'Settings'
+    };
+    document.getElementById('headerTitle').textContent = titles[sectionId] || 'Dashboard';
+  }
+
+  function openProductModal() {
+    document.getElementById('productModal').classList.add('active');
+  }
+
+  function closeProductModal() {
+    document.getElementById('productModal').classList.remove('active');
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.target.closest('.upload-area').classList.add('dragover');
+  }
+
+  function handleDragLeave(e) {
+    e.target.closest('.upload-area').classList.remove('dragover');
+  }
+
+  function handleDrop(e, type) {
+    e.preventDefault();
+    e.target.closest('.upload-area').classList.remove('dragover');
+    const files = e.dataTransfer.files;
+    if (type === 'photos') {
+      handlePhotoUpload({target: {files}});
+    } else {
+      handleVideoUpload({target: {files}});
+    }
+  }
+
+  function handlePhotoUpload(e) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          mediaFiles.photos.push({name: file.name, src: event.target.result, type: 'image'});
+          updatePhotoPreview();
+          updateMediaCount();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  function handleVideoUpload(e) {
+    const files = Array.from(e.target.files);
+    files.forEach(file => {
+      if (file.type.startsWith('video/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          mediaFiles.videos.push({name: file.name, src: event.target.result, type: 'video'});
+          updateVideoPreview();
+          updateMediaCount();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  function updatePhotoPreview() {
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = mediaFiles.photos.map((file, idx) => `
+      <div class="preview-item">
+        <img src="${file.src}" alt="preview">
+        <button class="preview-remove" onclick="removeMedia('photos', ${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function updateVideoPreview() {
+    const preview = document.getElementById('videoPreview');
+    preview.innerHTML = mediaFiles.videos.map((file, idx) => `
+      <div class="preview-item">
+        <video><source src="${file.src}"></video>
+        <button class="preview-remove" onclick="removeMedia('videos', ${idx})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function removeMedia(type, idx) {
+    mediaFiles[type].splice(idx, 1);
+    if (type === 'photos') updatePhotoPreview();
+    else updateVideoPreview();
+    updateMediaCount();
+  }
+
+  function updateMediaCount() {
+    document.getElementById('mediaCount').textContent = mediaFiles.photos.length + mediaFiles.videos.length;
+  }
+
+  function showAlert(message, type) {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.textContent = message;
+    document.querySelector('.content').insertBefore(alert, document.querySelector('.content').firstChild);
+    setTimeout(() => alert.remove(), 3000);
+  }
+</script>
