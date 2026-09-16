@@ -543,7 +543,79 @@
       .container { padding: 32px 16px; }
       .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
       .cart-panel { max-width: 100%; }
+      .ad-banner { margin: 16px 0; }
+      .ad-nav { display: none; }
+      .ad-dots { bottom: 8px; }
+      .ad-dot { width: 8px; height: 8px; }
     }
+
+/* FRONT PAGE AD BANNER */
+.ad-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--luxury-bg);
+  margin: 32px 0;
+}
+.ad-slides {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+.ad-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+.ad-slide img,
+.ad-slide video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ad-nav {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+}
+.ad-prev, .ad-next {
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 24px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ad-prev:hover, .ad-next:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+.ad-dots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+.ad-dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.ad-dot.active {
+  background: var(--luxury-accent);
+}
   </style>
 </head>
 <body>
@@ -561,6 +633,16 @@
     </div>
   </header>
 
+  <!-- FRONT PAGE AD BANNER -->
+  <div class="ad-banner">
+    <div class="ad-slides" id="adSlides"></div>
+    <div class="ad-nav">
+      <button class="ad-prev" onclick="prevAd()">&#9664;</button>
+      <button class="ad-next" onclick="nextAd()">&#9654;</button>
+    </div>
+    <div class="ad-dots" id="adDots"></div>
+  </div>
+
   <div class="brand-nav" id="brandTabs"></div>
 
   <div class="filters-bar">
@@ -568,7 +650,7 @@
     <button class="filter-btn active" onclick="filterByGender('All')">All</button>
     <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
     <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
-    <button class="filter-btn" onclick="filterByGender('Unisex')">Unisex</button>
+    <button class="filter-btn" onclick="filterByGender('Unisex')">Universal</button>
     <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
   </div>
 
@@ -780,6 +862,74 @@
     renderBrandTabs();
     filterProducts();
     updateCartDisplay();
+
+    // Initialize ad banner (same logic as index.html)
+    let currentAdSlide = 0;
+    function renderAdBanner() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      const adSlides = document.getElementById('adSlides');
+      const adDots = document.getElementById('adDots');
+
+      if (ads.length === 0) {
+        adSlides.innerHTML = `
+          <div class="ad-slide" style="height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--luxury-bg), var(--luxury-card));">
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px; color: var(--luxury-accent);">INDOSWISS</div>
+              <div style="font-size: 18px; color: var(--luxury-text);">Premium Luxury Watches</div>
+            </div>
+          </div>
+        `;
+        adDots.innerHTML = '';
+        return;
+      }
+
+      // Render slides
+      adSlides.innerHTML = ads.map(ad => {
+        if (ad.type === 'image') {
+          return `<div class="ad-slide"><img src="${ad.data}" alt="Advertisement"></div>`;
+        } else {
+          return `<div class="ad-slide"><video src="${ad.data}" autoplay muted loop playsinline style="width: 100%;"></video></div>`;
+        }
+      }).join('');
+
+      // Render dots
+      adDots.innerHTML = ads.map((_, i) => `<div class="ad-dot ${i === 0 ? 'active' : ''}" onclick="goToAdSlide(${i})"></div>`).join('');
+
+      // Auto-rotate if more than 1 ad
+      if (ads.length > 1) {
+        setInterval(() => {
+          currentAdSlide = (currentAdSlide + 1) % ads.length;
+          goToAdSlide(currentAdSlide);
+        }, 5000);
+      }
+    }
+
+    function goToAdSlide(index) {
+      currentAdSlide = index;
+      const adSlides = document.getElementById('adSlides');
+      const adDots = document.getElementById('adDots');
+
+      adSlides.style.transform = `translateX(-${index * 100}%)`;
+      adDots.querySelectorAll('.ad-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextAd() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      if (ads.length === 0) return;
+      currentAdSlide = (currentAdSlide + 1) % ads.length;
+      goToAdSlide(currentAdSlide);
+    }
+
+    function prevAd() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      if (ads.length === 0) return;
+      currentAdSlide = (currentAdSlide - 1 + ads.length) % ads.length;
+      goToAdSlide(currentAdSlide);
+    }
+
+    renderAdBanner();
 
     window.addEventListener('storage', () => location.reload());
   </script>
