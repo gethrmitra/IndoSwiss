@@ -664,6 +664,12 @@
     <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
   </div>
 
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="section-header" id="sectionTitle">Curated Collections</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
   <!-- MEDIA: Front page ad banner -->
   <div class="ad-banner">
     <div class="ad-slides" id="adSlides"></div>
@@ -672,11 +678,6 @@
       <button class="ad-next" onclick="nextAd()">&#9654;</button>
     </div>
     <div class="ad-dots" id="adDots"></div>
-  </div>
-
-  <div class="container">
-    <div class="section-header" id="sectionTitle">Curated Collections</div>
-    <div class="products-grid" id="productsGrid"></div>
   </div>
 
   <footer>
@@ -748,8 +749,8 @@
 
     function scrollToCollections() {
       const container = document.querySelector('.container');
-      if (container && window.innerWidth <= 768) {
-        // On mobile, scroll so the user sees the navigated section
+      if (container) {
+        // Scroll so the user sees the navigated section on all devices
         window.scrollTo({ top: container.offsetTop - 10, behavior: 'smooth' });
       }
     }
@@ -763,7 +764,6 @@
       filterProducts();
       document.getElementById('sectionTitle').textContent = selectedBrand ? `${selectedBrand} Collection` : 'Curated Collections';
       updateHash();
-      scrollToCollections();
     }
 
     function filterByGender(gender) {
@@ -772,7 +772,6 @@
       event.target.classList.add('active');
       filterProducts();
       updateHash();
-      scrollToCollections();
     }
 
     function filterProducts() {
