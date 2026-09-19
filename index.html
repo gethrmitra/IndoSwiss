@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IndoSwiss — Premium Luxury Watches</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap">
+  <style>
+    :root {
+      --luxury-dark: #0a0a0a;
+      --luxury-bg: #f5f3f0;
+      --luxury-card: #ffffff;
+      --luxury-text: #1a1a1a;
+      --luxury-text-light: #6b6b6b;
+      --luxury-accent: #c9a961;
+      --luxury-accent-dark: #a68442;
+      --luxury-success: #2d5016;
+      --border-subtle: #e8e6e3;
+      --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.08);
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: all 0.15s ease;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-pill: 50px;
+      --chrono-bg: #ffffff;
+      --chrono-card-bg: #fafafa;
+      --chrono-border: #eeeeee;
+      --chrono-text: #333333;
+      --chrono-text-light: #666666;
+      --chrono-price: #d4af37;
+      --chrono-sale-price: #e53935;
+      --chrono-badge-bg: #f0f0f0;
+  }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --luxury-dark: #ffffff;
+        --luxury-bg: #1a1a1a;
+        --luxury-card: #252525;
+        --luxury-text: #f5f3f0;
+        --luxury-text-light: #b0b0b0;
+        --luxury-accent: #d4af37;
+        --luxury-accent-dark: #e8c547;
+        --border-subtle: #3a3a3a;
+        --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.2);
+        --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--chrono-bg);
+      color: var(--chrono-text);
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      letter-spacing: 0.2px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* PREMIUM HEADER */
+    header {
+      background: var(--luxury-card);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .logo-luxury {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--luxury-accent);
+      text-transform: uppercase;
+    }
+
+    .tagline-luxury {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--luxury-text-light);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    header .logo-section { display: flex; flex-direction: column; }
+
+    .header-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cart-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      transition: var(--transition-fast);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .cart-btn:hover {
+      transform: scale(1.1);
+      background: rgba(201, 169, 97, 0.08);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* NAVIGATION TABS */
+    .brand-nav {
+      background: var(--luxury-card);
+      border-bottom: 2px solid var(--border-subtle);
+      padding: 0 32px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--luxury-accent) transparent;
+    }
+
+    .brand-nav::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .brand-nav::-webkit-scrollbar-thumb {
+      background-color: var(--luxury-accent);
+      border-radius: 2px;
+    }
+
+    .brand-tab {
+      padding: 18px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--luxury-text-light);
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      border-bottom: 3px solid transparent;
+      transition: var(--transition-smooth);
+      white-space: nowrap;
+      text-transform: uppercase;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .brand-tab:hover { color: var(--luxury-accent); }
+    .brand-tab.active {
+      color: var(--luxury-accent);
+      border-bottom-color: var(--luxury-accent);
+    }
+
+    /* FILTERS */
+    .filters-bar {
+      background: var(--luxury-card);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 20px 32px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--luxury-text-light);
+    }
+
+    .filter-btn {
+      padding: 10px 18px;
+      background: var(--luxury-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--luxury-text);
+      transition: var(--transition-smooth);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      min-width: 70px;
+      white-space: nowrap;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--luxury-accent);
+      color: var(--luxury-accent);
+    }
+
+    .filter-btn.active {
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border-color: var(--luxury-accent);
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 12px 16px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--luxury-bg);
+      color: var(--luxury-text);
+      font-size: 13px;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--luxury-accent);
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: var(--luxury-text-light);
+      opacity: 0.7;
+    }
+
+    /* MAIN CONTENT */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    .section-header {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--luxury-accent);
+    }
+
+    /* PRODUCT GRID */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .product-card {
+      background: var(--luxury-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition-smooth);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--luxury-accent);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .product-card:active {
+      transform: translateY(-4px);
+    }
+
+    .product-gallery {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--luxury-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-size: 64px;
+    }
+
+    .product-gallery img, .product-gallery video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-gallery img,
+    .product-card:hover .product-gallery video {
+      transform: scale(1.05);
+    }
+
+    .gallery-controls {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .gallery-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: var(--transition-fast);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+    }
+
+    .gallery-btn:hover { background: rgba(0, 0, 0, 0.9); }
+
+    .media-count {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(4px);
+      border-radius: var(--radius-sm);
+    }
+
+    .campaign-badge {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border-radius: var(--radius-sm);
+    }
+
+    .product-info {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .product-brand {
+      font-size: 12px;
+      color: var(--luxury-text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .product-price {
+      display: flex;
+      gap: 12px;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+
+    .original-price {
+      font-size: 14px;
+      color: var(--luxury-text-light);
+      text-decoration: line-through;
+    }
+
+    .current-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--luxury-accent);
+      letter-spacing: 0.5px;
+    }
+
+    .stock-badge {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .stock-good { color: var(--luxury-success); }
+    .stock-low { color: #d97706; }
+    .stock-out { color: #dc2626; }
+
+    .product-cta {
+      padding: 14px 24px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: var(--transition-smooth);
+      margin-top: auto;
+      border-radius: var(--radius-pill);
+    }
+
+    .product-cta:hover {
+      background: var(--luxury-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--luxury-card);
+      border-top: 1px solid var(--border-subtle);
+      margin-top: 64px;
+    }
+
+    .footer-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 48px;
+    }
+
+    .footer-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      transition: color var(--transition-smooth);
+    }
+
+    .footer-heading:hover { color: var(--luxury-accent); }
+
+    .footer-heading::after {
+      content: '▼';
+      font-size: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .footer-heading.active::after {
+      transform: rotate(180deg);
+    }
+
+    .footer-content {
+      font-size: 13px;
+      color: var(--luxury-text-light);
+      line-height: 1.8;
+    }
+
+    .footer-divider {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 24px;
+      margin-top: 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--luxury-text-light);
+      letter-spacing: 0.5px;
+    }
+
+    /* CART MODAL */
+    .cart-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+
+    .cart-modal.active { display: flex; }
+
+    .cart-panel {
+      background: var(--luxury-card);
+      width: 100%;
+      max-width: 420px;
+      height: 100%;
+      overflow-y: auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      animation: slideIn 0.3s ease;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .cart-header {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--luxury-text);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .close-btn:hover { background: rgba(0, 0, 0, 0.05); }
+
+    .cart-items { flex: 1; margin-bottom: 24px; }
+
+    .cart-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-weight: 600; margin-bottom: 4px; }
+    .cart-item-details { color: var(--luxury-text-light); }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .remove-btn:hover { background: rgba(220, 38, 38, 0.1); }
+
+    .cart-total {
+      background: var(--luxury-bg);
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: var(--radius-lg);
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--luxury-accent);
+      color: var(--luxury-card);
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: var(--transition-smooth);
+      margin-bottom: 12px;
+      border-radius: var(--radius-pill);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .checkout-btn:hover {
+      background: var(--luxury-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
+    }
+
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 768px) {
+      header { padding: 16px; }
+      .brand-nav { padding: 0 16px; }
+      .filters-bar { padding: 16px; gap: 12px; }
+      .container { padding: 32px 16px; }
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+      }
+      .cart-panel { max-width: 100%; }
+
+      .section-header {
+        font-size: 24px;
+        margin-bottom: 24px;
+      }
+
+      .product-card {
+        border-radius: var(--radius-md);
+      }
+
+      .product-info {
+        padding: 16px;
+      }
+
+      .product-name {
+        font-size: 16px;
+      }
+
+      .current-price {
+        font-size: 18px;
+      }
+
+      .filter-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+
+      .search-input {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .ad-slides, .ad-slide { height: 260px; }
+    }
+
+    /* EXTRA SMALL DEVICES */
+    @media (max-width: 480px) {
+      header { padding: 12px; }
+      .brand-nav { padding: 0 12px; }
+      .filters-bar { padding: 12px; gap: 8px; flex-direction: column; align-items: stretch; }
+      .container { padding: 24px 12px; }
+
+      .filter-btn {
+        flex: 1;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      .search-input {
+        margin-top: 8px;
+        padding: 10px 12px;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        font-size: 20px;
+      }
+
+      .ad-slides, .ad-slide { height: 200px; }
+
+      .gallery-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .media-count, .campaign-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+
+      .product-name {
+        font-size: 15px;
+      }
+
+      .current-price {
+        font-size: 16px;
+      }
+    }
+
+    /* PREMIUM ENHANCEMENTS */
+    .premium-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: var(--transition-smooth);
+    }
+
+    .premium-hover:hover::before {
+      left: 100%;
+    }
+
+    /* LOADING STATES */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--luxury-bg) 25%, var(--border-subtle) 50%, var(--luxury-bg) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: var(--radius-md);
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* SUBTLE ANIMATIONS */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* TOUCH FEEDBACK */
+    *:active {
+      transform: scale(0.98);
+    }
+
+    /* SCROLL ENHANCEMENTS */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--luxury-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--luxury-accent);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--luxury-accent-dark);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <div class="logo-luxury" id="headerLogoText">IndoSwiss</div>
+      <div class="tagline-luxury" id="headerTaglineText">Luxury Timepieces</div>
+    </div>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛍️
+        <span class="cart-count" id="cartCount" style="display: none;">0</span>
+      </button>
+      <button style="background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--luxury-accent);" onclick="window.open('admin.html', '_blank')">ADMIN</button>
+    </div>
+  </header>
+
+  <!-- TOP NAVIGATION: Brand tabs -->
+  <div class="brand-nav" id="brandTabs"></div>
+
+  <!-- SECOND ROW: Gender filters -->
+  <div class="filters-bar">
+    <button class="filter-btn active" onclick="filterByGender('All')">All</button>
+    <button class="filter-btn" onclick="filterByGender('Mens')">Mens</button>
+    <button class="filter-btn" onclick="filterByGender('Womens')">Womens</button>
+    <button class="filter-btn" onclick="filterByGender('Unisex')">Universal</button>
+    <input type="text" class="search-input" id="searchBox" placeholder="Search collections..." onkeyup="filterProducts()">
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="section-header" id="sectionTitle">Curated Collections</div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+
+  <!-- MEDIA: Front page ad banner -->
+  <div class="ad-banner">
+    <div class="ad-slides" id="adSlides"></div>
+    <div class="ad-nav">
+      <button class="ad-prev" onclick="prevAd()">&#9664;</button>
+      <button class="ad-next" onclick="nextAd()">&#9654;</button>
+    </div>
+    <div class="ad-dots" id="adDots"></div>
+  </div>
+
+  <footer>
+    <div class="footer-section">
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">
+          <span id="dynamicStoreName">IndoSwiss</span>
+          <span id="dynamicTagline" style="font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-left: 8px;">Luxury Timepieces</span>
+        </div>
+        <div class="footer-content" id="aboutText" style="display: none;">Discover authentic luxury watches from the world's finest manufacturers.</div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">Contact</div>
+        <div class="footer-content" style="display: none;">
+          <div>📧 <span id="companyEmail">hello@indoswiss.com</span></div>
+          <div>📞 <span id="companyPhone">+1-800-INDOSWISS</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">Shipping & Returns</div>
+        <div class="footer-content" id="shippingText" style="display: none;">Free shipping on orders over $1,000. 30-day return window.</div>
+      </div>
+      <div>
+        <div class="footer-heading" onclick="toggleFooterSection(event)">FAQ</div>
+        <div class="footer-content" id="faqList" style="display: none;"></div>
+      </div>
+    </div>
+    <div class="footer-divider">© <span id="dynamicYear">2024</span> <span id="dynamicStoreName">IndoSwiss</span> Luxury Watches. All Rights Reserved.</div>
+  </footer>
+
+  <div class="cart-modal" id="cartModal">
+    <div class="cart-panel">
+      <div class="cart-header">
+        SHOPPING CART
+        <button class="close-btn" onclick="toggleCart()">✕</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <span>TOTAL</span>
+        <span id="totalAmount">$0</span>
+      </div>
+      <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO CHECKOUT</button>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedBrand = null;
+    let selectedGender = 'All';
+    let searchTerm = '';
+
+    const store = {
+      brands: JSON.parse(localStorage.getItem('brands')) || [
+        { id: 'rolex', name: 'Rolex', country: 'Switzerland' },
+        { id: 'omega', name: 'Omega', country: 'Switzerland' }
+      ],
+      products: JSON.parse(localStorage.getItem('products')) || [
+        {
+          name: 'Rolex Submariner Date',
+          brand: 'Rolex',
+          price: 8500,
+          reference: '126610LN',
+          location: 'Switzerland',
+          condition: 'New',
+          stock: 5,
+          images: ['https://via.placeholder.com/300x400?text=Rolex+Submariner']
+        },
+        {
+          name: 'Omega Speedmaster Professional',
+          brand: 'Omega',
+          price: 5200,
+          reference: '311.32.42.30.01.001',
+          location: 'Switzerland',
+          condition: 'New',
+          stock: 3,
+          images: ['https://via.placeholder.com/300x400?text=Omega+Speedmaster']
+        }
+      ],
+      discounts: JSON.parse(localStorage.getItem('discounts')) || [],
+      campaigns: JSON.parse(localStorage.getItem('campaigns')) || [],
+    };
+
+    function renderBrandTabs() {
+      const container = document.getElementById('brandTabs');
+      container.innerHTML = store.brands.map(b => `
+        <button class="brand-tab" onclick="selectBrand(event, '${b.name}')">${b.name}</button>
+      `).join('');
+    }
+
+    function scrollToCollections() {
+      const container = document.querySelector('.container');
+      if (container) {
+        // Scroll so the user sees the navigated section on all devices
+        window.scrollTo({ top: container.offsetTop - 10, behavior: 'smooth' });
+      }
+    }
+
+    function selectBrand(event, brand) {
+      selectedBrand = brand;
+      document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+      filterProducts();
+      document.getElementById('sectionTitle').textContent = selectedBrand ? `${selectedBrand} Collection` : 'Curated Collections';
+      updateHash();
+    }
+
+    function filterByGender(event, gender) {
+      selectedGender = gender;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+      filterProducts();
+      updateHash();
+    }
+
+    function filterProducts() {
+      searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const filtered = store.products.filter(p => {
+        const matchBrand = !selectedBrand || p.brand === selectedBrand;
+        const matchGender = selectedGender === 'All' || p.gender === selectedGender;
+        const matchSearch = !searchTerm || p.name.toLowerCase().includes(searchTerm) || p.brand.toLowerCase().includes(searchTerm);
+        return matchBrand && matchGender && matchSearch;
+      });
+      renderProducts(filtered);
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('productsGrid');
+      const now = new Date().getTime();
+
+      grid.innerHTML = products.map(p => {
+        const productIdx = store.products.indexOf(p);
+        const discount = store.discounts.find(d => d.productIdx === productIdx);
+        let displayPrice = p.price;
+        let originalPrice = null;
+
+        if (discount) {
+          if (discount.discount.type === 'percent') {
+            displayPrice = Math.round(p.price * (1 - discount.discount.value / 100));
+          } else {
+            displayPrice = p.price - discount.discount.value;
+          }
+          originalPrice = p.price;
+        }
+
+        const stockClass = p.stock > 10 ? 'stock-good' : p.stock > 0 ? 'stock-low' : 'stock-out';
+        const stockText = p.stock > 10 ? 'IN STOCK' : p.stock > 0 ? `${p.stock} LEFT` : 'SOLD OUT';
+        const firstImage = p.images?.[0] || null;
+
+        return `
+          <div class="product-card premium-hover">
+            <div class="product-image-container">
+              ${firstImage ? `<img src="${firstImage}" alt="${p.name}" class="product-image">` : '<div class="product-placeholder">⌚</div>'}
+              ${p.images?.length > 1 ? `<div class="image-count">+${p.images.length - 1}</div>` : ''}
+              ${store.campaigns.find(c => new Date(c.endDate) > now && c.productIds.includes(productIdx)) ? `<div class="sale-badge">Sale</div>` : ''}
+            </div>
+            <div class="product-details">
+              <div class="product-brand">${p.brand}</div>
+              <div class="product-title">${p.name}</div>
+              <div class="product-reference">Ref. ${p.reference || 'XXXXXX'}</div>
+              <div class="product-price">
+                ${originalPrice ? `<span class="original-price">$${originalPrice.toLocaleString()}</span>` : ''}
+                <span class="current-price">$${displayPrice.toLocaleString()}</span>
+              </div>
+              <div class="product-location">${p.location || 'Switzerland'}</div>
+              <div class="product-condition">${p condition || 'New'}</div>
+              <div class="product-actions">
+                <button class="btn-heart" onclick="toggleFavorite(${productIdx})">♡</button>
+                <button class="btn-cart" onclick="addToCart(${productIdx})">Add to Cart</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addToCart(idx) {
+      const product = store.products[idx];
+      const existing = cart.find(item => item.idx === idx);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ idx, name: product.name, price: product.price, qty: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function updateCartDisplay() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const cartCount = document.getElementById('cartCount');
+      if (count > 0) {
+        cartCount.textContent = count;
+        cartCount.style.display = 'flex';
+      } else {
+        cartCount.style.display = 'none';
+      }
+
+      const cartItems = document.getElementById('cartItems');
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      cartItems.innerHTML = cart.length > 0
+        ? cart.map((item, i) => `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-details">$${item.price.toLocaleString()} × ${item.qty}</div>
+            </div>
+            <button class="remove-btn" onclick="removeFromCart(${i})">Remove</button>
+          </div>
+        `).join('')
+        : '<p style="color: var(--luxury-text-light); text-align: center; padding: 40px 0;">Your cart is empty</p>';
+
+      document.getElementById('totalAmount').textContent = '$' + total.toLocaleString();
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+    }
+
+    function toggleCart() {
+      document.getElementById('cartModal').classList.toggle('active');
+    }
+
+    function goToCheckout() {
+      if (cart.length > 0) {
+        window.location.href = 'checkout-premium.html';
+      }
+    }
+
+    function toggleFooterSection(e) {
+      const heading = e.target.classList.contains('footer-heading')
+        ? e.target
+        : e.target.closest('.footer-heading');
+      if (!heading) return;
+
+      const content = heading.nextElementSibling;
+      const allContents = document.querySelectorAll('.footer-content');
+      const allHeadings = document.querySelectorAll('.footer-heading');
+
+      if (!content) return;
+      const isOpen = content.style.display !== 'none';
+
+      // Close everything first (accordion behaviour)
+      allContents.forEach(c => { c.style.display = 'none'; });
+      allHeadings.forEach(h => h.classList.remove('active'));
+
+      // Toggle the clicked one
+      if (!isOpen) {
+        content.style.display = 'block';
+        content.style.marginTop = '8px';
+        heading.classList.add('active');
+      }
+    }
+
+    // Apply filters from URL hash (e.g. #brand=Rolex&gender=Mens) on page load
+    function applyHashFilters() {
+      const hash = window.location.hash.replace(/^#/, '');
+      const params = new URLSearchParams(hash);
+      const brand = params.get('brand');
+      const gender = params.get('gender');
+
+      if (brand && store.brands.some(b => b.name === brand)) {
+        selectedBrand = brand;
+      }
+      if (gender && ['Mens', 'Womens', 'Unisex'].includes(gender)) {
+        selectedGender = gender;
+      }
+    }
+
+    function updateHash() {
+      const params = new URLSearchParams();
+      if (selectedBrand) params.set('brand', selectedBrand);
+      if (selectedGender !== 'All') params.set('gender', selectedGender);
+      const newHash = params.toString() ? '#' + params.toString() : '';
+      if (window.location.hash !== newHash) {
+        history.replaceState(null, '', newHash || window.location.pathname);
+      }
+    }
+
+    // Initialize
+    applyHashFilters();
+    renderBrandTabs();
+
+    // Highlight active brand + gender tabs from the URL hash
+    if (selectedBrand) {
+      document.querySelectorAll('.brand-tab').forEach(btn => {
+        if (btn.textContent === selectedBrand) btn.classList.add('active');
+      });
+      document.getElementById('sectionTitle').textContent = `${selectedBrand} Collection`;
+    }
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      if (btn.textContent === selectedGender) btn.classList.add('active');
+    });
+
+    filterProducts();
+    updateCartDisplay();
+
+    // Load dynamic company info
+    const storedCompanyName = localStorage.getItem('companyName') || 'IndoSwiss';
+    const storedTagline = localStorage.getItem('companyTagline') || 'Luxury Timepieces';
+    const storedLogo = localStorage.getItem('companyLogo');
+
+    // Update header logo name and tagline
+    document.getElementById('headerLogoText').textContent = storedCompanyName;
+    document.getElementById('headerTaglineText').textContent = storedTagline;
+
+    // Insert logo image in header if available
+    if (storedLogo) {
+      const logoSection = document.querySelector('.logo-section');
+      const logoImg = document.createElement('img');
+      logoImg.src = storedLogo;
+      logoImg.style.height = '24px';
+      logoImg.style.marginRight = '12px';
+      logoSection.insertBefore(logoImg, logoSection.firstChild);
+    }
+
+    // Update footer
+    document.getElementById('dynamicStoreName').textContent = storedCompanyName;
+    document.getElementById('dynamicTagline').textContent = storedTagline;
+    document.getElementById('dynamicYear').textContent = new Date().getFullYear();
+
+    // IndexedDB helpers to read videos stored in the media database (admin stores large videos here)
+    const MEDIA_DB = 'indoswissMedia';
+    function idbOpen() {
+      return new Promise((resolve, reject) => {
+        try {
+          const req = indexedDB.open(MEDIA_DB, 1);
+          req.onupgradeneeded = () => {
+            if (!req.result.objectStoreNames.contains('files')) {
+              req.result.createObjectStore('files');
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      });
+    }
+    function idbGet(key) {
+      return idbOpen().then(db => new Promise((resolve, reject) => {
+        try {
+          const tx = db.transaction('files', 'readonly');
+          const req = tx.objectStore('files').get(key);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error);
+        } catch (e) { reject(e); }
+      }));
+    }
+
+    // Initialize ad banner
+    let currentAdSlide = 0;
+    async function renderAdBanner() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      const adSlides = document.getElementById('adSlides');
+      const adDots = document.getElementById('adDots');
+
+      if (ads.length === 0) {
+        adSlides.innerHTML = `
+          <div class="ad-slide" style="height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--luxury-bg), var(--luxury-card));">
+            <div style="text-align: center; padding: 40px;">
+              <div style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 16px; color: var(--luxury-accent);">INDOSWISS</div>
+              <div style="font-size: 18px; color: var(--luxury-text);">Premium Luxury Watches</div>
+            </div>
+          </div>
+        `;
+        adDots.innerHTML = '';
+        return;
+      }
+
+      // Render slides with async video loading
+      adSlides.innerHTML = ads.map((ad, index) => {
+        if (ad.type === 'image') {
+          return `<div class="ad-slide"><img src="${ad.data}" alt="Advertisement"></div>`;
+        } else {
+          return `<div class="ad-slide"><video id="ad-video-${index}" autoplay muted loop playsinline style="width: 100%; height: 100%; object-fit: cover;"></video></div>`;
+        }
+      }).join('');
+
+      // Render dots
+      adDots.innerHTML = ads.map((_, i) => `<div class="ad-dot ${i === 0 ? 'active' : ''}" onclick="goToAdSlide(${i})"></div>`).join('');
+
+      // Load videos (from localStorage data URL or browser IndexedDB)
+      for (let i = 0; i < ads.length; i++) {
+        if (ads[i].type !== 'video') continue;
+        const el = document.getElementById('ad-video-' + i);
+        if (!el) continue;
+        try {
+          if (typeof ads[i].data === 'string' && ads[i].data.startsWith('idb:')) {
+            const blob = await idbGet(ads[i].data.slice(4));
+            if (blob) el.src = URL.createObjectURL(blob);
+          } else {
+            el.src = ads[i].data;
+          }
+        } catch (e) { /* skip broken video */ }
+      }
+
+      // Auto-rotate if more than 1 ad
+      if (ads.length > 1) {
+        setInterval(() => {
+          currentAdSlide = (currentAdSlide + 1) % ads.length;
+          goToAdSlide(currentAdSlide);
+        }, 5000);
+      }
+    }
+
+    function goToAdSlide(index) {
+      currentAdSlide = index;
+      const adSlides = document.getElementById('adSlides');
+      const adDots = document.getElementById('adDots');
+
+      adSlides.style.transform = `translateX(-${index * 100}%)`;
+      adDots.querySelectorAll('.ad-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+
+    function nextAd() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      if (ads.length === 0) return;
+      currentAdSlide = (currentAdSlide + 1) % ads.length;
+      goToAdSlide(currentAdSlide);
+    }
+
+    function prevAd() {
+      const ads = JSON.parse(localStorage.getItem('ads')) || [];
+      if (ads.length === 0) return;
+      currentAdSlide = (currentAdSlide - 1 + ads.length) % ads.length;
+      goToAdSlide(currentAdSlide);
+    }
+
+    renderAdBanner();
+
+    window.addEventListener('storage', () => location.reload());
+  </script>
+</body>
+</html>

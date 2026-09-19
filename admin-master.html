@@ -1,0 +1,981 @@
+<title>Chronos Admin — Complete Control Center</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #f9f7f4;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f5f3f1;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border: #e8e6e4;
+    --accent: #b8860b;
+    --accent-dark: #92660d;
+    --success: #10b981;
+    --error: #dc2626;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-primary: #0f0e0d;
+      --bg-secondary: #1a1a19;
+      --bg-tertiary: #2a2a28;
+      --text-primary: #fafaf9;
+      --text-secondary: #a8a8a8;
+      --text-tertiary: #777777;
+      --border: #3a3a38;
+      --accent: #d4af37;
+      --accent-dark: #e8c547;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    min-height: 100%;
+    display: flex;
+  }
+
+  .sidebar {
+    width: 250px;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+
+  .nav-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    color: var(--accent);
+    background: var(--bg-tertiary);
+    border-left-color: var(--accent);
+  }
+
+  .main {
+    margin-left: 250px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    flex: 1;
+    padding: 32px;
+    overflow-y: auto;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dark);
+  }
+
+  .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-danger {
+    background: var(--error);
+    color: white;
+  }
+
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .item-row {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .table thead {
+    background: var(--bg-tertiary);
+  }
+
+  .table th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .upload-area:hover {
+    border-color: var(--accent);
+    background: var(--bg-tertiary);
+  }
+
+  .logo-preview {
+    width: 120px;
+    height: 120px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .logo-preview img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .media-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .media-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+  }
+
+  .media-item img,
+  .media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--error);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 12px;
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+
+  .alert-success {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 0; }
+    .main { margin-left: 0; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">CHRONOS</div>
+  </div>
+  <nav style="flex: 1; padding: 16px 0;">
+    <div class="nav-item active" onclick="switchSection('branding')">🎨 Branding</div>
+    <div class="nav-item" onclick="switchSection('brands')">🏷️ Brands</div>
+    <div class="nav-item" onclick="switchSection('products')">⌚ Products</div>
+    <div class="nav-item" onclick="switchSection('media')">📸 Media</div>
+    <div class="nav-item" onclick="switchSection('company')">🏢 Company</div>
+    <div class="nav-item" onclick="switchSection('policies')">📋 Policies</div>
+    <div class="nav-item" onclick="switchSection('support')">💬 Support</div>
+  </nav>
+</div>
+
+<div class="main">
+  <header>
+    <div style="font-size: 20px; font-weight: 600;" id="headerTitle">Branding</div>
+    <button class="btn btn-primary" onclick="window.open('store.html', '_blank')">👁️ View Store</button>
+  </header>
+
+  <div class="content">
+    <!-- BRANDING SECTION -->
+    <div id="branding" class="section active">
+      <div class="page-title">Store Branding</div>
+      <div class="page-subtitle">Customize your store's visual identity</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Store Logo</h3>
+          <div class="logo-preview" id="logoPreview">
+            <span style="font-size: 48px;">⌚</span>
+          </div>
+          <div style="margin-top: 16px;">
+            <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+            <button class="btn btn-secondary btn-small" onclick="document.getElementById('logoInput').click()">Upload Logo</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Store Details</h3>
+          <div class="form-group">
+            <label>Store Name</label>
+            <input type="text" id="storeName" value="Chronos">
+          </div>
+          <div class="form-group">
+            <label>Tagline</label>
+            <input type="text" id="tagline" value="Luxury Timepieces for Connoisseurs">
+          </div>
+          <div class="form-group">
+            <label>Brand Color (Accent)</label>
+            <input type="color" id="accentColor" value="#b8860b" style="height: 40px;">
+          </div>
+          <button class="btn btn-primary" onclick="saveBranding()">Save Branding</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRANDS SECTION -->
+    <div id="brands" class="section">
+      <div class="page-title">Watch Brands</div>
+      <div class="page-subtitle">Manage premium watch brands</div>
+
+      <button class="btn btn-primary" onclick="openBrandModal()">+ Add Brand</button>
+
+      <div class="card" style="margin-top: 24px;">
+        <div id="brandsList"></div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS SECTION -->
+    <div id="products" class="section">
+      <div class="page-title">Products</div>
+      <div class="page-subtitle">Add and manage watch products</div>
+
+      <button class="btn btn-primary" onclick="openProductModal()">+ Add Product</button>
+
+      <div class="card" style="margin-top: 24px;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Price</th>
+              <th>Gender</th>
+              <th>Stock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productsList"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEDIA SECTION -->
+    <div id="media" class="section">
+      <div class="page-title">Media Gallery</div>
+      <div class="page-subtitle">Upload showcase images and videos</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>📸 Showcase Photos</h3>
+          <div class="upload-area" ondrop="handleDrop(event, 'photo')" ondragover="event.preventDefault()" onclick="document.getElementById('photoInput').click()">
+            Drop photos or click
+            <input type="file" id="photoInput" accept="image/*" multiple style="display: none;" onchange="handlePhotoUpload(event)">
+          </div>
+          <div id="photoPreview" class="media-preview"></div>
+        </div>
+
+        <div class="card">
+          <h3>🎬 Showcase Videos</h3>
+          <div class="upload-area" ondrop="handleDrop(event, 'video')" ondragover="event.preventDefault()" onclick="document.getElementById('videoInput').click()">
+            Drop videos or click
+            <input type="file" id="videoInput" accept="video/*" multiple style="display: none;" onchange="handleVideoUpload(event)">
+          </div>
+          <div id="videoPreview" class="media-preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPANY SECTION -->
+    <div id="company" class="section">
+      <div class="page-title">Company Information</div>
+      <div class="page-subtitle">Manage company details and contact info</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Basic Information</h3>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" value="hello@chronos.com">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" id="phone" value="+1-800-CHRONOS">
+          </div>
+          <div class="form-group">
+            <label>Address</label>
+            <input type="text" id="address" value="123 Watch Street, Geneva">
+          </div>
+          <button class="btn btn-primary" onclick="saveCompany()">Save</button>
+        </div>
+
+        <div class="card">
+          <h3>About Us</h3>
+          <textarea id="aboutText" style="width: 100%; min-height: 120px;">Chronos is your premier destination for authentic luxury watches from the world's most prestigious brands.</textarea>
+          <button class="btn btn-primary" style="margin-top: 12px;" onclick="saveAbout()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POLICIES SECTION -->
+    <div id="policies" class="section">
+      <div class="page-title">Policies</div>
+      <div class="page-subtitle">Manage store policies</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Shipping Policy</h3>
+          <textarea id="shippingText" style="width: 100%; min-height: 120px;">• Free shipping on orders over $1,000
+• Domestic: 3-5 business days
+• International: 7-14 business days</textarea>
+          <button class="btn btn-primary" style="margin-top: 12px;" onclick="savePolicy('shipping')">Save</button>
+        </div>
+
+        <div class="card">
+          <h3>Returns Policy</h3>
+          <textarea id="returnsText" style="width: 100%; min-height: 120px;">• 30-day return window
+• Items in original condition
+• Free return shipping for defects</textarea>
+          <button class="btn btn-primary" style="margin-top: 12px;" onclick="savePolicy('returns')">Save</button>
+        </div>
+
+        <div class="card">
+          <h3>Warranty</h3>
+          <textarea id="warrantyText" style="width: 100%; min-height: 120px;">• Manufacturer warranty honored
+• 2-year authenticity guarantee
+• Service partnerships available</textarea>
+          <button class="btn btn-primary" style="margin-top: 12px;" onclick="savePolicy('warranty')">Save</button>
+        </div>
+
+        <div class="card">
+          <h3>Privacy & Terms</h3>
+          <textarea id="privacyText" style="width: 100%; min-height: 120px;">• Data never shared with third parties
+• Secure SSL encryption
+• GDPR compliant</textarea>
+          <button class="btn btn-primary" style="margin-top: 12px;" onclick="savePolicy('privacy')">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT SECTION -->
+    <div id="support" class="section">
+      <div class="page-title">Customer Support</div>
+      <div class="page-subtitle">Configure support channels</div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Support Channels</h3>
+          <div class="form-group">
+            <label>Support Email</label>
+            <input type="email" id="supportEmail" value="support@chronos.com">
+          </div>
+          <div class="form-group">
+            <label>Support Phone</label>
+            <input type="tel" id="supportPhone" value="+1-800-123-4567">
+          </div>
+          <div class="form-group">
+            <label>Response Time</label>
+            <input type="text" id="responseTime" value="Within 2 hours">
+          </div>
+          <button class="btn btn-primary" onclick="saveSupport()">Save</button>
+        </div>
+
+        <div class="card">
+          <h3>FAQs</h3>
+          <button class="btn btn-secondary btn-small" onclick="openFAQModal()">+ Add FAQ</button>
+          <div id="faqList" style="margin-top: 12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="brandModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeBrandModal()">✕</button>
+    <h2 style="margin-bottom: 20px;">Add Brand</h2>
+    <div class="form-group">
+      <label>Brand Name</label>
+      <input type="text" id="brandName" placeholder="e.g., Seiko">
+    </div>
+    <div class="form-group">
+      <label>Country</label>
+      <input type="text" id="brandCountry" placeholder="e.g., Japan">
+    </div>
+    <button class="btn btn-primary" onclick="addBrand()">Add Brand</button>
+  </div>
+</div>
+
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeProductModal()">✕</button>
+    <h2 style="margin-bottom: 20px;">Add Product</h2>
+    <div class="form-group">
+      <label>Product Name</label>
+      <input type="text" id="productName" placeholder="e.g., Submariner">
+    </div>
+    <div class="form-group">
+      <label>Brand</label>
+      <select id="productBrand"></select>
+    </div>
+    <div class="form-group">
+      <label>Price</label>
+      <input type="number" id="productPrice" placeholder="9500">
+    </div>
+    <div class="form-group">
+      <label>Gender</label>
+      <select id="productGender">
+        <option>Mens</option>
+        <option>Womens</option>
+        <option>Unisex</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Stock</label>
+      <input type="number" id="productStock" value="5">
+    </div>
+    <button class="btn btn-primary" onclick="addProduct()">Add Product</button>
+  </div>
+</div>
+
+<div id="faqModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeFAQModal()">✕</button>
+    <h2 style="margin-bottom: 20px;">Add FAQ</h2>
+    <div class="form-group">
+      <label>Question</label>
+      <input type="text" id="faqQuestion" placeholder="Enter question...">
+    </div>
+    <div class="form-group">
+      <label>Answer</label>
+      <textarea id="faqAnswer" placeholder="Enter answer..."></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="addFAQ()">Add FAQ</button>
+  </div>
+</div>
+
+<script>
+  // Initialize data from localStorage
+  const store = {
+    branding: {
+      name: localStorage.getItem('storeName') || 'Chronos',
+      tagline: localStorage.getItem('tagline') || 'Luxury Timepieces for Connoisseurs',
+      logo: localStorage.getItem('storeLogo') || null,
+      accentColor: localStorage.getItem('accentColor') || '#b8860b'
+    },
+    brands: JSON.parse(localStorage.getItem('brands')) || [
+      { name: 'Rolex', country: 'Switzerland' },
+      { name: 'Omega', country: 'Switzerland' }
+    ],
+    products: JSON.parse(localStorage.getItem('products')) || [],
+    media: {
+      photos: JSON.parse(localStorage.getItem('mediaPhotos')) || [],
+      videos: JSON.parse(localStorage.getItem('mediaVideos')) || []
+    }
+  };
+
+  // ── External media hosting ─────────────────────────────
+  // Get a free Imgur Client-ID at https://api.imgur.com/oauth2/addclient
+  // (choose "Anonymous use" / no callback URL). Paste it below and media
+  // uploads will be stored as permanent image/video links instead of
+  // heavy base64 data. Leave blank to keep the offline browser-storage
+  // fallback — it still works, but is limited to ~5MB per origin.
+  const IMGUR_CLIENT_ID = ''; // ← paste your Client-ID here
+
+  async function uploadToImgur(file) {
+    if (!IMGUR_CLIENT_ID) return null;
+    try {
+      const form = new FormData();
+      form.append('image', file);
+      const res = await fetch('https://api.imgur.com/3/image', {
+        method: 'POST',
+        headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
+        body: form
+      });
+      const json = await res.json();
+      return json && json.success ? json.data.link : null;
+    } catch (err) {
+      console.warn('Imgur upload failed — falling back to browser storage:', err);
+      return null;
+    }
+  }
+
+  function readAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function storeMediaItem(file, type) {
+    try {
+      const url = await uploadToImgur(file);
+      let storedExternally = false;
+      if (url) {
+        store.media[type].push(url);
+        storedExternally = true;
+      } else {
+        store.media[type].push(await readAsDataURL(file));
+      }
+      localStorage.setItem(`media${type === 'photos' ? 'Photos' : 'Videos'}`, JSON.stringify(store.media[type]));
+      type === 'photos' ? renderMediaPhotos() : renderMediaVideos();
+      showAlert(storedExternally ? 'Uploaded to Imgur!' : 'Added to browser storage.');
+    } catch (err) {
+      showAlert('Upload failed: ' + err.message);
+    }
+  }
+
+  function switchSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.target.closest('.nav-item').classList.add('active');
+    const titles = { branding: 'Branding', brands: 'Brands', products: 'Products', media: 'Media', company: 'Company', policies: 'Policies', support: 'Support' };
+    document.getElementById('headerTitle').textContent = titles[id];
+  }
+
+  function saveBranding() {
+    store.branding.name = document.getElementById('storeName').value;
+    store.branding.tagline = document.getElementById('tagline').value;
+    store.branding.accentColor = document.getElementById('accentColor').value;
+    localStorage.setItem('storeName', store.branding.name);
+    localStorage.setItem('tagline', store.branding.tagline);
+    localStorage.setItem('accentColor', store.branding.accentColor);
+    showAlert('Branding saved!');
+  }
+
+  function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        store.branding.logo = event.target.result;
+        localStorage.setItem('storeLogo', event.target.result);
+        document.getElementById('logoPreview').innerHTML = `<img src="${event.target.result}" style="max-width: 100%; max-height: 100%;">`;
+        showAlert('Logo uploaded!');
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function renderBrands() {
+    const list = document.getElementById('brandsList');
+    list.innerHTML = store.brands.map((b, i) => `
+      <div class="item-row">
+        <div><strong>${b.name}</strong><br><span style="font-size: 12px; color: var(--text-secondary);">${b.country}</span></div>
+        <button class="btn btn-danger btn-small" onclick="deleteBrand(${i})">Delete</button>
+      </div>
+    `).join('');
+    const select = document.getElementById('productBrand');
+    select.innerHTML = store.brands.map(b => `<option>${b.name}</option>`).join('');
+  }
+
+  function openBrandModal() { document.getElementById('brandModal').classList.add('active'); }
+  function closeBrandModal() { document.getElementById('brandModal').classList.remove('active'); }
+
+  function addBrand() {
+    const name = document.getElementById('brandName').value;
+    const country = document.getElementById('brandCountry').value;
+    if (name && country) {
+      store.brands.push({ name, country });
+      localStorage.setItem('brands', JSON.stringify(store.brands));
+      renderBrands();
+      showAlert('Brand added!');
+      closeBrandModal();
+      document.getElementById('brandName').value = '';
+      document.getElementById('brandCountry').value = '';
+    }
+  }
+
+  function deleteBrand(i) {
+    store.brands.splice(i, 1);
+    localStorage.setItem('brands', JSON.stringify(store.brands));
+    renderBrands();
+    showAlert('Brand deleted!');
+  }
+
+  function renderProducts() {
+    const list = document.getElementById('productsList');
+    list.innerHTML = store.products.map((p, i) => `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.brand}</td>
+        <td>$${p.price}</td>
+        <td>${p.gender}</td>
+        <td>${p.stock}</td>
+        <td><button class="btn btn-danger btn-small" onclick="deleteProduct(${i})">Delete</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function openProductModal() { document.getElementById('productModal').classList.add('active'); }
+  function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
+
+  function addProduct() {
+    const name = document.getElementById('productName').value;
+    const brand = document.getElementById('productBrand').value;
+    const price = document.getElementById('productPrice').value;
+    const gender = document.getElementById('productGender').value;
+    const stock = document.getElementById('productStock').value;
+    if (name && price) {
+      store.products.push({ name, brand, price: parseInt(price), gender, stock: parseInt(stock) });
+      localStorage.setItem('products', JSON.stringify(store.products));
+      renderProducts();
+      showAlert('Product added!');
+      closeProductModal();
+    }
+  }
+
+  function deleteProduct(i) {
+    store.products.splice(i, 1);
+    localStorage.setItem('products', JSON.stringify(store.products));
+    renderProducts();
+    showAlert('Product deleted!');
+  }
+
+  function handlePhotoUpload(e) {
+    Array.from(e.target.files).forEach(file => storeMediaItem(file, 'photos'));
+  }
+
+  function handleVideoUpload(e) {
+    Array.from(e.target.files).forEach(file => storeMediaItem(file, 'videos'));
+  }
+
+  function handleDrop(e, type) {
+    e.preventDefault();
+    if (type === 'photo') {
+      document.getElementById('photoInput').files = e.dataTransfer.files;
+      handlePhotoUpload({target: {files: e.dataTransfer.files}});
+    } else {
+      document.getElementById('videoInput').files = e.dataTransfer.files;
+      handleVideoUpload({target: {files: e.dataTransfer.files}});
+    }
+  }
+
+  function renderMediaPhotos() {
+    const preview = document.getElementById('photoPreview');
+    preview.innerHTML = store.media.photos.map((p, i) => `
+      <div class="media-item">
+        <img src="${p}">
+        <button class="media-remove" onclick="removeMedia('photos', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function renderMediaVideos() {
+    const preview = document.getElementById('videoPreview');
+    preview.innerHTML = store.media.videos.map((v, i) => `
+      <div class="media-item">
+        <video controls><source src="${v}"></video>
+        <button class="media-remove" onclick="removeMedia('videos', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function removeMedia(type, i) {
+    store.media[type].splice(i, 1);
+    localStorage.setItem(`media${type === 'photos' ? 'Photos' : 'Videos'}`, JSON.stringify(store.media[type]));
+    type === 'photos' ? renderMediaPhotos() : renderMediaVideos();
+  }
+
+  function saveCompany() {
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const address = document.getElementById('address').value;
+    localStorage.setItem('email', email);
+    localStorage.setItem('phone', phone);
+    localStorage.setItem('address', address);
+    showAlert('Company info saved!');
+  }
+
+  function saveAbout() {
+    const aboutText = document.getElementById('aboutText').value;
+    localStorage.setItem('aboutText', aboutText);
+    showAlert('About us saved!');
+  }
+
+  function savePolicy(type) {
+    const textId = type + 'Text';
+    const text = document.getElementById(textId).value;
+    localStorage.setItem(type + 'Text', text);
+    showAlert(`${type} policy saved!`);
+  }
+
+  function saveSupport() {
+    const supportEmail = document.getElementById('supportEmail').value;
+    const supportPhone = document.getElementById('supportPhone').value;
+    const responseTime = document.getElementById('responseTime').value;
+    localStorage.setItem('supportEmail', supportEmail);
+    localStorage.setItem('supportPhone', supportPhone);
+    localStorage.setItem('responseTime', responseTime);
+    showAlert('Support info saved!');
+  }
+
+  function openFAQModal() { document.getElementById('faqModal').classList.add('active'); }
+  function closeFAQModal() { document.getElementById('faqModal').classList.remove('active'); }
+
+  function addFAQ() {
+    const question = document.getElementById('faqQuestion').value;
+    const answer = document.getElementById('faqAnswer').value;
+    if (question && answer) {
+      let faqs = JSON.parse(localStorage.getItem('faqs')) || [];
+      faqs.push({ question, answer });
+      localStorage.setItem('faqs', JSON.stringify(faqs));
+      renderFAQs();
+      showAlert('FAQ added!');
+      closeFAQModal();
+      document.getElementById('faqQuestion').value = '';
+      document.getElementById('faqAnswer').value = '';
+    }
+  }
+
+  function renderFAQs() {
+    const faqs = JSON.parse(localStorage.getItem('faqs')) || [];
+    const list = document.getElementById('faqList');
+    list.innerHTML = faqs.map((f, i) => `
+      <div class="item-row">
+        <div><strong>${f.question}</strong><br><span style="font-size: 12px; color: var(--text-secondary);">${f.answer}</span></div>
+        <button class="btn btn-danger btn-small" onclick="deleteFAQ(${i})">Delete</button>
+      </div>
+    `).join('');
+  }
+
+  function deleteFAQ(i) {
+    let faqs = JSON.parse(localStorage.getItem('faqs')) || [];
+    faqs.splice(i, 1);
+    localStorage.setItem('faqs', JSON.stringify(faqs));
+    renderFAQs();
+    showAlert('FAQ deleted!');
+  }
+
+  function showAlert(msg) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success';
+    alert.textContent = msg;
+    document.querySelector('.content').insertBefore(alert, document.querySelector('.content').firstChild);
+    setTimeout(() => alert.remove(), 2000);
+  }
+
+  // Load initial data
+  document.getElementById('storeName').value = store.branding.name;
+  document.getElementById('tagline').value = store.branding.tagline;
+  document.getElementById('accentColor').value = store.branding.accentColor;
+  if (store.branding.logo) {
+    document.getElementById('logoPreview').innerHTML = `<img src="${store.branding.logo}" style="max-width: 100%;">`;
+  }
+  renderBrands();
+  renderProducts();
+  renderMediaPhotos();
+  renderMediaVideos();
+  renderFAQs();
+</script>

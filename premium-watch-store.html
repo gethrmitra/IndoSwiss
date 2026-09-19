@@ -1,0 +1,691 @@
+<title>Chronos — Premium Watch Collection</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-primary: #fafaf9;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f5f5f4;
+    --text-primary: #1a1a1a;
+    --text-secondary: #666666;
+    --text-tertiary: #999999;
+    --border: #e7e5e4;
+    --accent: #b8860b;
+    --accent-light: #fef3c7;
+    --accent-dark: #92660d;
+    --success: #10b981;
+    --error: #dc2626;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg-primary: #0f0f0e;
+      --bg-secondary: #1a1a19;
+      --bg-tertiary: #2a2a28;
+      --text-primary: #fafaf9;
+      --text-secondary: #a8a8a8;
+      --text-tertiary: #777777;
+      --border: #3a3a38;
+      --accent: #d4af37;
+      --accent-light: #3d3410;
+      --accent-dark: #e8c547;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg-primary: #0f0f0e;
+    --bg-secondary: #1a1a19;
+    --bg-tertiary: #2a2a28;
+    --text-primary: #fafaf9;
+    --text-secondary: #a8a8a8;
+    --text-tertiary: #777777;
+    --border: #3a3a38;
+    --accent: #d4af37;
+    --accent-light: #3d3410;
+    --accent-dark: #e8c547;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  body > * {
+    flex: 0 0 auto;
+  }
+
+  #__next {
+    flex: 1;
+  }
+
+  header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    gap: 8px;
+    flex: 1;
+    max-width: 300px;
+  }
+
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  .cart-icon {
+    cursor: pointer;
+    font-size: 20px;
+    position: relative;
+  }
+
+  .cart-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: var(--accent);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  main {
+    flex: 1;
+    padding: 40px 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .section-subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .tabs-container {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .tabs-container::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .tabs-container::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+  }
+
+  .tabs-container::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .tab {
+    padding: 16px 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .tab:hover {
+    color: var(--text-primary);
+  }
+
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .gender-toggle {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .gender-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+  }
+
+  .gender-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .gender-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .product-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(184, 134, 11, 0.1);
+    transform: translateY(-4px);
+  }
+
+  .product-image {
+    background: var(--bg-tertiary);
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    font-weight: 300;
+    color: var(--text-tertiary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .product-content {
+    padding: 16px;
+  }
+
+  .product-brand {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  .product-description {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .product-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .add-to-cart-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .add-to-cart-btn:hover {
+    background: var(--accent-dark);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .empty-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    padding: 40px 20px;
+    margin-top: 40px;
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+  }
+
+  .footer-section h4 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+
+  .footer-section ul {
+    list-style: none;
+  }
+
+  .footer-section li {
+    margin-bottom: 8px;
+  }
+
+  .footer-section a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+  }
+
+  .footer-section a:hover {
+    color: var(--accent);
+  }
+
+  .footer-bottom {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 24px;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .header-actions {
+      gap: 12px;
+    }
+
+    .search-box {
+      display: none;
+    }
+
+    .tabs-container {
+      gap: 8px;
+    }
+
+    .tab {
+      padding: 12px 16px;
+      font-size: 13px;
+    }
+  }
+</style>
+
+<header>
+  <div class="header-container">
+    <div class="logo">CHRONOS</div>
+    <div class="header-actions">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Search watches...">
+      </div>
+      <div class="cart-icon">
+        🛒
+        <div class="cart-count" id="cartCount">0</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="section-title">Premium Watch Collection</div>
+    <div class="section-subtitle">Discover luxury timepieces from the world's finest brands</div>
+
+    <div class="tabs-container" id="brandTabs">
+      <button class="tab active" data-brand="all">All Brands</button>
+      <button class="tab" data-brand="rolex">Rolex</button>
+      <button class="tab" data-brand="omega">Omega</button>
+      <button class="tab" data-brand="cartier">Cartier</button>
+      <button class="tab" data-brand="patek-philippe">Patek Philippe</button>
+      <button class="tab" data-brand="tag-heuer">Tag Heuer</button>
+      <button class="tab" data-brand="breitling">Breitling</button>
+      <button class="tab" data-brand="longines">Longines</button>
+    </div>
+
+    <div class="gender-toggle" id="genderToggle">
+      <button class="gender-btn active" data-gender="all">All</button>
+      <button class="gender-btn" data-gender="mens">Mens</button>
+      <button class="gender-btn" data-gender="womens">Womens</button>
+    </div>
+
+    <div id="productsContainer" class="products-grid"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>About Chronos</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Customer Service</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">FAQs</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Policies</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Warranty</a></li>
+        <li><a href="#">Authenticity</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">Facebook</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Chronos. All rights reserved. Authenticated luxury watches worldwide.</p>
+  </div>
+</footer>
+
+<script>
+  const products = [
+    // Rolex
+    { id: 1, brand: 'rolex', name: 'Submariner Date', price: '$9,500', gender: 'mens', emoji: '⌚' },
+    { id: 2, brand: 'rolex', name: 'Datejust 36', price: '$7,200', gender: 'mens', emoji: '⌚' },
+    { id: 3, brand: 'rolex', name: 'Lady-Datejust', price: '$6,800', gender: 'womens', emoji: '⌚' },
+    { id: 4, brand: 'rolex', name: 'Daytona', price: '$15,000', gender: 'mens', emoji: '⌚' },
+    { id: 5, brand: 'rolex', name: 'Sky-Dweller', price: '$44,000', gender: 'mens', emoji: '⌚' },
+    { id: 6, brand: 'rolex', name: 'Pearlmaster', price: '$35,000', gender: 'womens', emoji: '⌚' },
+
+    // Omega
+    { id: 7, brand: 'omega', name: 'Seamaster Aqua Terra', price: '$6,500', gender: 'mens', emoji: '⌚' },
+    { id: 8, brand: 'omega', name: 'Speedmaster Pro', price: '$5,900', gender: 'mens', emoji: '⌚' },
+    { id: 9, brand: 'omega', name: 'Constellation', price: '$5,200', gender: 'womens', emoji: '⌚' },
+    { id: 10, brand: 'omega', name: 'De Ville', price: '$4,800', gender: 'womens', emoji: '⌚' },
+    { id: 11, brand: 'omega', name: 'Seamaster 300M', price: '$7,100', gender: 'mens', emoji: '⌚' },
+    { id: 12, brand: 'omega', name: 'Aqua Terra GMT', price: '$8,200', gender: 'mens', emoji: '⌚' },
+
+    // Cartier
+    { id: 13, brand: 'cartier', name: 'Tank Francaise', price: '$5,800', gender: 'mens', emoji: '⌚' },
+    { id: 14, brand: 'cartier', name: 'Ballon Bleu', price: '$6,200', gender: 'womens', emoji: '⌚' },
+    { id: 15, brand: 'cartier', name: 'Panthere', price: '$7,500', gender: 'womens', emoji: '⌚' },
+    { id: 16, brand: 'cartier', name: 'Santos de Cartier', price: '$5,500', gender: 'mens', emoji: '⌚' },
+    { id: 17, brand: 'cartier', name: 'Rotonde', price: '$8,900', gender: 'mens', emoji: '⌚' },
+    { id: 18, brand: 'cartier', name: 'Drive de Cartier', price: '$6,800', gender: 'mens', emoji: '⌚' },
+
+    // Patek Philippe
+    { id: 19, brand: 'patek-philippe', name: 'Aquanaut', price: '$32,000', gender: 'mens', emoji: '⌚' },
+    { id: 20, brand: 'patek-philippe', name: 'Calatrava', price: '$28,000', gender: 'mens', emoji: '⌚' },
+    { id: 21, brand: 'patek-philippe', name: 'Twenty-4', price: '$36,000', gender: 'womens', emoji: '⌚' },
+    { id: 22, brand: 'patek-philippe', name: 'Nautilus', price: '$45,000', gender: 'mens', emoji: '⌚' },
+    { id: 23, brand: 'patek-philippe', name: 'Annual Calendar', price: '$55,000', gender: 'mens', emoji: '⌚' },
+    { id: 24, brand: 'patek-philippe', name: 'Gondolo', price: '$42,000', gender: 'mens', emoji: '⌚' },
+
+    // Tag Heuer
+    { id: 25, brand: 'tag-heuer', name: 'Carrera', price: '$4,900', gender: 'mens', emoji: '⌚' },
+    { id: 26, brand: 'tag-heuer', name: 'Aquaracer', price: '$3,800', gender: 'mens', emoji: '⌚' },
+    { id: 27, brand: 'tag-heuer', name: 'Formula 1', price: '$3,500', gender: 'womens', emoji: '⌚' },
+    { id: 28, brand: 'tag-heuer', name: 'Monaco', price: '$6,500', gender: 'mens', emoji: '⌚' },
+    { id: 29, brand: 'tag-heuer', name: 'Autavia', price: '$5,200', gender: 'mens', emoji: '⌚' },
+    { id: 30, brand: 'tag-heuer', name: 'WAY Series', price: '$3,200', gender: 'womens', emoji: '⌚' },
+
+    // Breitling
+    { id: 31, brand: 'breitling', name: 'Navitimer', price: '$7,200', gender: 'mens', emoji: '⌚' },
+    { id: 32, brand: 'breitling', name: 'Superocean', price: '$5,900', gender: 'mens', emoji: '⌚' },
+    { id: 33, brand: 'breitling', name: 'Chronomat', price: '$6,800', gender: 'mens', emoji: '⌚' },
+    { id: 34, brand: 'breitling', name: 'Avenger', price: '$4,800', gender: 'mens', emoji: '⌚' },
+    { id: 35, brand: 'breitling', name: 'Chronomat 36', price: '$5,200', gender: 'womens', emoji: '⌚' },
+    { id: 36, brand: 'breitling', name: 'Windrider', price: '$4,500', gender: 'womens', emoji: '⌚' },
+
+    // Longines
+    { id: 37, brand: 'longines', name: 'Conquest Classic', price: '$2,800', gender: 'mens', emoji: '⌚' },
+    { id: 38, brand: 'longines', name: 'DolceVita', price: '$2,200', gender: 'womens', emoji: '⌚' },
+    { id: 39, brand: 'longines', name: 'HydroConquest', price: '$2,500', gender: 'mens', emoji: '⌚' },
+    { id: 40, brand: 'longines', name: 'Master Collection', price: '$3,200', gender: 'mens', emoji: '⌚' },
+    { id: 41, brand: 'longines', name: 'PrimaLuna', price: '$2,900', gender: 'womens', emoji: '⌚' },
+    { id: 42, brand: 'longines', name: 'Spirit', price: '$3,100', gender: 'mens', emoji: '⌚' },
+  ];
+
+  let cart = [];
+  let selectedBrand = 'all';
+  let selectedGender = 'all';
+
+  function renderProducts() {
+    const filtered = products.filter(p =>
+      (selectedBrand === 'all' || p.brand === selectedBrand) &&
+      (selectedGender === 'all' || p.gender === selectedGender)
+    );
+
+    const container = document.getElementById('productsContainer');
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-state-icon">👀</div>
+            <h3>No watches found</h3>
+            <p>Try adjusting your filters</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(product => `
+      <div class="product-card">
+        <div class="product-image">${product.emoji}</div>
+        <div class="product-content">
+          <div class="product-brand">${product.brand.replace('-', ' ')}</div>
+          <div class="product-name">${product.name}</div>
+          <div class="product-description">${product.gender === 'mens' ? "Men's" : "Women's"} Collection</div>
+          <div class="product-footer">
+            <div class="product-price">${product.price}</div>
+            <button class="add-to-cart-btn" onclick="addToCart(${product.id})">Add</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function addToCart(productId) {
+    cart.push(productId);
+    document.getElementById('cartCount').textContent = cart.length;
+  }
+
+  document.getElementById('brandTabs').addEventListener('click', (e) => {
+    if (e.target.classList.contains('tab')) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      e.target.classList.add('active');
+      selectedBrand = e.target.dataset.brand;
+      renderProducts();
+    }
+  });
+
+  document.getElementById('genderToggle').addEventListener('click', (e) => {
+    if (e.target.classList.contains('gender-btn')) {
+      document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+      e.target.classList.add('active');
+      selectedGender = e.target.dataset.gender;
+      renderProducts();
+    }
+  });
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const container = document.getElementById('productsContainer');
+    const filtered = products.filter(p =>
+      p.name.toLowerCase().includes(query) &&
+      (selectedBrand === 'all' || p.brand === selectedBrand) &&
+      (selectedGender === 'all' || p.gender === selectedGender)
+    );
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1;">
+          <div class="empty-state">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No results for "${query}"</h3>
+            <p>Try different keywords</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = filtered.map(product => `
+      <div class="product-card">
+        <div class="product-image">${product.emoji}</div>
+        <div class="product-content">
+          <div class="product-brand">${product.brand.replace('-', ' ')}</div>
+          <div class="product-name">${product.name}</div>
+          <div class="product-description">${product.gender === 'mens' ? "Men's" : "Women's"} Collection</div>
+          <div class="product-footer">
+            <div class="product-price">${product.price}</div>
+            <button class="add-to-cart-btn" onclick="addToCart(${product.id})">Add</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  });
+
+  renderProducts();
+</script>
