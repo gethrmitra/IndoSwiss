@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>IndoSwiss — Premium Luxury Watches</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap">
   <style>
@@ -16,6 +16,15 @@
       --luxury-accent-dark: #a68442;
       --luxury-success: #2d5016;
       --border-subtle: #e8e6e3;
+      --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.08);
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: all 0.15s ease;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-pill: 50px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -28,6 +37,9 @@
         --luxury-accent: #d4af37;
         --luxury-accent-dark: #e8c547;
         --border-subtle: #3a3a3a;
+        --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.2);
+        --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.25);
       }
     }
 
@@ -41,6 +53,9 @@
       font-weight: 400;
       line-height: 1.6;
       letter-spacing: 0.3px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* PREMIUM HEADER */
@@ -54,6 +69,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: var(--shadow-soft);
     }
 
     .logo-luxury {
@@ -88,24 +104,33 @@
       border: none;
       cursor: pointer;
       font-size: 24px;
-      transition: all 0.3s ease;
+      transition: var(--transition-fast);
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
 
-    .cart-btn:hover { transform: scale(1.1); }
+    .cart-btn:hover {
+      transform: scale(1.1);
+      background: rgba(201, 169, 97, 0.08);
+    }
 
     .cart-count {
       position: absolute;
-      top: -8px;
-      right: -8px;
+      top: -6px;
+      right: -6px;
       background: var(--luxury-accent);
       color: var(--luxury-card);
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
     }
 
@@ -117,6 +142,17 @@
       display: flex;
       gap: 0;
       overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--luxury-accent) transparent;
+    }
+
+    .brand-nav::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .brand-nav::-webkit-scrollbar-thumb {
+      background-color: var(--luxury-accent);
+      border-radius: 2px;
     }
 
     .brand-tab {
@@ -129,9 +165,11 @@
       font-size: 14px;
       letter-spacing: 0.5px;
       border-bottom: 3px solid transparent;
-      transition: all 0.3s ease;
+      transition: var(--transition-smooth);
       white-space: nowrap;
       text-transform: uppercase;
+      min-width: 80px;
+      text-align: center;
     }
 
     .brand-tab:hover { color: var(--luxury-accent); }
@@ -163,14 +201,16 @@
       padding: 10px 18px;
       background: var(--luxury-bg);
       border: 1px solid var(--border-subtle);
-      border-radius: 24px;
+      border-radius: var(--radius-pill);
       cursor: pointer;
       font-size: 13px;
       font-weight: 600;
       color: var(--luxury-text);
-      transition: all 0.3s ease;
+      transition: var(--transition-smooth);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      min-width: 70px;
+      white-space: nowrap;
     }
 
     .filter-btn:hover {
@@ -187,12 +227,24 @@
     .search-input {
       flex: 1;
       min-width: 250px;
-      padding: 10px 16px;
+      padding: 12px 16px;
       border: 1px solid var(--border-subtle);
-      border-radius: 4px;
+      border-radius: var(--radius-md);
       background: var(--luxury-bg);
       color: var(--luxury-text);
       font-size: 13px;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--luxury-accent);
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
+    }
+
+    .search-input::placeholder {
+      color: var(--luxury-text-light);
+      opacity: 0.7;
     }
 
     /* MAIN CONTENT */
@@ -209,6 +261,18 @@
       letter-spacing: 1px;
       margin-bottom: 40px;
       text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-header::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--luxury-accent);
     }
 
     /* PRODUCT GRID */
@@ -221,18 +285,24 @@
     .product-card {
       background: var(--luxury-card);
       border: 1px solid var(--border-subtle);
-      border-radius: 0;
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      transition: all 0.4s ease;
+      transition: var(--transition-smooth);
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      height: 100%;
+      box-shadow: var(--shadow-soft);
     }
 
     .product-card:hover {
       transform: translateY(-8px);
       border-color: var(--luxury-accent);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .product-card:active {
+      transform: translateY(-4px);
     }
 
     .product-gallery {
@@ -278,8 +348,9 @@
       align-items: center;
       justify-content: center;
       font-size: 14px;
-      transition: all 0.2s ease;
+      transition: var(--transition-fast);
       backdrop-filter: blur(4px);
+      border-radius: 50%;
     }
 
     .gallery-btn:hover { background: rgba(0, 0, 0, 0.9); }
@@ -295,6 +366,7 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       backdrop-filter: blur(4px);
+      border-radius: var(--radius-sm);
     }
 
     .campaign-badge {
@@ -307,6 +379,7 @@
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.5px;
+      border-radius: var(--radius-sm);
     }
 
     .product-info {
@@ -322,6 +395,7 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
+      line-height: 1.3;
     }
 
     .product-brand {
@@ -376,13 +450,15 @@
       font-size: 13px;
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
+      transition: var(--transition-smooth);
       margin-top: auto;
+      border-radius: var(--radius-pill);
     }
 
     .product-cta:hover {
       background: var(--luxury-accent-dark);
       transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
     }
 
     /* FOOTER */
@@ -413,7 +489,10 @@
       gap: 8px;
       align-items: center;
       justify-content: space-between;
+      transition: color var(--transition-smooth);
     }
+
+    .footer-heading:hover { color: var(--luxury-accent); }
 
     .footer-heading::after {
       content: '▼';
@@ -467,6 +546,7 @@
       display: flex;
       flex-direction: column;
       animation: slideIn 0.3s ease;
+      box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
     }
 
     @keyframes slideIn {
@@ -493,7 +573,15 @@
       font-size: 24px;
       cursor: pointer;
       color: var(--luxury-text);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
+
+    .close-btn:hover { background: rgba(0, 0, 0, 0.05); }
 
     .cart-items { flex: 1; margin-bottom: 24px; }
 
@@ -517,7 +605,15 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 12px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
+
+    .remove-btn:hover { background: rgba(220, 38, 38, 0.1); }
 
     .cart-total {
       background: var(--luxury-bg);
@@ -526,6 +622,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-radius: var(--radius-lg);
     }
 
     .checkout-btn {
@@ -539,102 +636,188 @@
       font-size: 13px;
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
+      transition: var(--transition-smooth);
       margin-bottom: 12px;
+      border-radius: var(--radius-pill);
+      font-family: 'Inter', sans-serif;
     }
 
     .checkout-btn:hover {
       background: var(--luxury-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(201, 169, 97, 0.3);
     }
 
+    /* MOBILE OPTIMIZATIONS */
     @media (max-width: 768px) {
       header { padding: 16px; }
       .brand-nav { padding: 0 16px; }
-      .filters-bar { padding: 16px; }
+      .filters-bar { padding: 16px; gap: 12px; }
       .container { padding: 32px 16px; }
-      .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 16px;
+      }
       .cart-panel { max-width: 100%; }
+
+      .section-header {
+        font-size: 24px;
+        margin-bottom: 24px;
+      }
+
+      .product-card {
+        border-radius: var(--radius-md);
+      }
+
+      .product-info {
+        padding: 16px;
+      }
+
+      .product-name {
+        font-size: 16px;
+      }
+
+      .current-price {
+        font-size: 18px;
+      }
+
+      .filter-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+      }
+
+      .search-input {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .ad-slides, .ad-slide { height: 260px; }
     }
 
-/* FRONT PAGE AD BANNER (outside media query so it works on all screen sizes) */
-.ad-banner {
-  position: relative;
-  overflow: hidden;
-  border-radius: 0;
-  background: var(--luxury-bg);
-  margin: 32px 0;
-}
-.ad-slides {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  height: 480px;
-}
-.ad-slide {
-  min-width: 100%;
-  width: 100%;
-  height: 480px;
-  box-sizing: border-box;
-  position: relative;
-  flex-shrink: 0;
-}
-.ad-slide img,
-.ad-slide video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.ad-nav {
-  position: absolute;
-  top: 50%;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  z-index: 5;
-}
-.ad-prev, .ad-next {
-  background: rgba(0, 0, 0, 0.5);
-  border: none;
-  color: white;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-size: 24px;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.ad-prev:hover, .ad-next:hover {
-  background: rgba(0, 0, 0, 0.7);
-}
-.ad-dots {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 5;
-}
-.ad-dot {
-  width: 10px;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.ad-dot.active {
-  background: var(--luxury-accent);
-}
+    /* EXTRA SMALL DEVICES */
+    @media (max-width: 480px) {
+      header { padding: 12px; }
+      .brand-nav { padding: 0 12px; }
+      .filters-bar { padding: 12px; gap: 8px; flex-direction: column; align-items: stretch; }
+      .container { padding: 24px 12px; }
 
-@media (max-width: 768px) {
-  .ad-slides, .ad-slide { height: 260px; }
-}
+      .filter-btn {
+        flex: 1;
+        text-align: center;
+        margin-bottom: 8px;
+      }
 
+      .search-input {
+        margin-top: 8px;
+        padding: 10px 12px;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        font-size: 20px;
+      }
+
+      .ad-slides, .ad-slide { height: 200px; }
+
+      .gallery-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .media-count, .campaign-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+
+      .product-name {
+        font-size: 15px;
+      }
+
+      .current-price {
+        font-size: 16px;
+      }
+    }
+
+    /* PREMIUM ENHANCEMENTS */
+    .premium-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: var(--transition-smooth);
+    }
+
+    .premium-hover:hover::before {
+      left: 100%;
+    }
+
+    /* LOADING STATES */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--luxury-bg) 25%, var(--border-subtle) 50%, var(--luxury-bg) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: var(--radius-md);
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* SUBTLE ANIMATIONS */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* TOUCH FEEDBACK */
+    *:active {
+      transform: scale(0.98);
+    }
+
+    /* SCROLL ENHANCEMENTS */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--luxury-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--luxury-accent);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--luxury-accent-dark);
+    }
   </style>
 </head>
 <body>
@@ -809,7 +992,7 @@
         const firstImage = p.images?.[0] || null;
 
         return `
-          <div class="product-card">
+          <div class="product-card premium-hover">
             <div class="product-gallery">
               ${firstImage ? `<img src="${firstImage}" alt="${p.name}">` : '⌚'}
               ${p.images?.length > 1 ? `<div class="media-count">📸 ${p.images.length}</div>` : ''}

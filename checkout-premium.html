@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Secure Checkout — IndoSwiss</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
   <script src="https://js.stripe.com/v3/"></script>
@@ -18,6 +18,15 @@
       --luxury-success: #2d5016;
       --border-subtle: #e8e6e3;
       --error: #dc2626;
+      --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.1);
+      --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.08);
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition-fast: all 0.15s ease;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-pill: 50px;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -30,6 +39,9 @@
         --luxury-accent: #d4af37;
         --luxury-accent-dark: #e8c547;
         --border-subtle: #3a3a3a;
+        --shadow-soft: 0 4px 6px rgba(0, 0, 0, 0.2);
+        --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.3);
+        --shadow-hover: 0 12px 24px rgba(0, 0, 0, 0.25);
       }
     }
 
@@ -45,6 +57,9 @@
       font-weight: 400;
       line-height: 1.6;
       letter-spacing: 0.3px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .checkout-container {
@@ -112,6 +127,17 @@
       margin-bottom: 20px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .form-section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: var(--luxury-accent);
     }
 
     .form-row {
@@ -140,40 +166,68 @@
     }
 
     input, select {
-      padding: 12px 14px;
+      padding: 14px 16px;
       border: 1px solid var(--border-subtle);
-      border-radius: 0;
+      border-radius: var(--radius-md);
       background: var(--luxury-bg);
       color: var(--luxury-text);
       font-size: 14px;
       font-family: 'Inter', sans-serif;
-      transition: all 0.2s ease;
+      transition: var(--transition-smooth);
     }
 
     input:focus, select:focus {
       outline: none;
       border-color: var(--luxury-accent);
       background: var(--luxury-card);
-      box-shadow: inset 0 0 0 1px var(--luxury-accent);
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
     }
 
     input::placeholder {
       color: var(--luxury-text-light);
+      opacity: 0.7;
+    }
+
+    /* PREMIUM INPUT EFFECTS */
+    .premium-input {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-input::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: var(--transition-smooth);
+    }
+
+    .premium-input:focus-within::before {
+      left: 100%;
     }
 
     /* STRIPE ELEMENTS */
     .StripeElement {
-      padding: 12px 14px;
+      padding: 14px 16px;
       border: 1px solid var(--border-subtle);
-      border-radius: 0;
+      border-radius: var(--radius-md);
       background: var(--luxury-bg);
       font-family: 'Inter', sans-serif;
       font-size: 14px;
+      transition: var(--transition-smooth);
     }
 
     .StripeElement--focus {
       border-color: var(--luxury-accent);
-      box-shadow: inset 0 0 0 1px var(--luxury-accent);
+      box-shadow: 0 0 0 2px rgba(201, 169, 97, 0.2);
     }
 
     /* SECURITY INFO */
@@ -183,8 +237,8 @@
       align-items: flex-start;
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
-      border-radius: 4px;
-      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
       font-size: 13px;
       color: #166534;
       margin-bottom: 24px;
@@ -202,6 +256,7 @@
       font-size: 12px;
       margin-top: 6px;
       display: none;
+      min-height: 18px;
     }
 
     .error-message.show {
@@ -226,12 +281,40 @@
       font-size: 13px;
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
+      transition: var(--transition-smooth);
+      border-radius: var(--radius-pill);
+      font-family: 'Inter', sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      transition: var(--transition-smooth);
     }
 
     .btn-primary:hover:not(:disabled) {
       background: var(--luxury-accent-dark);
       transform: translateY(-2px);
+    }
+
+    .btn-primary:hover:not(:disabled)::before {
+      left: 100%;
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     .btn-primary:disabled {
@@ -249,12 +332,18 @@
       font-size: 13px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      transition: all 0.2s ease;
+      transition: var(--transition-smooth);
+      border-radius: var(--radius-pill);
     }
 
     .btn-secondary:hover {
       border-color: var(--luxury-accent);
       color: var(--luxury-accent);
+      background: rgba(201, 169, 97, 0.05);
+    }
+
+    .btn-secondary:active {
+      background: rgba(201, 169, 97, 0.1);
     }
 
     /* ORDER SUMMARY SIDEBAR */
@@ -266,6 +355,17 @@
       margin-bottom: 24px;
       padding-bottom: 12px;
       border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+    }
+
+    .order-summary-title::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: var(--luxury-accent);
     }
 
     .order-item {
@@ -332,7 +432,9 @@
 
     .success-icon {
       font-size: 64px;
+      color: var(--luxury-accent);
       animation: scaleIn 0.5s ease;
+      display: inline-block;
     }
 
     @keyframes scaleIn {
@@ -350,17 +452,19 @@
     .success-message {
       color: var(--luxury-text-light);
       max-width: 400px;
+      line-height: 1.6;
     }
 
     .success-order-id {
       background: var(--luxury-bg);
       padding: 16px 24px;
-      border-radius: 4px;
+      border-radius: var(--radius-md);
       font-family: 'Courier New', monospace;
       font-weight: 600;
       font-size: 14px;
       letter-spacing: 1px;
       margin: 16px 0;
+      display: inline-block;
     }
 
     .success-actions {
@@ -380,7 +484,8 @@
       font-size: 13px;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      transition: all 0.2s ease;
+      transition: var(--transition-smooth);
+      border-radius: var(--radius-pill);
     }
 
     .success-actions .btn-primary {
@@ -390,6 +495,7 @@
 
     .success-actions .btn-primary:hover {
       background: var(--luxury-accent-dark);
+      transform: translateY(-2px);
     }
 
     .success-actions .btn-secondary {
@@ -401,6 +507,7 @@
     .success-actions .btn-secondary:hover {
       border-color: var(--luxury-accent);
       color: var(--luxury-accent);
+      background: rgba(201, 169, 97, 0.05);
     }
 
     /* LOADING STATE */
@@ -428,6 +535,80 @@
       to { transform: rotate(360deg); }
     }
 
+    /* SUBTLE ANIMATIONS */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    /* TOUCH FEEDBACK */
+    *:active {
+      transform: scale(0.98);
+    }
+
+    /* SCROLL ENHANCEMENTS */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--luxury-bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--luxury-accent);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--luxury-accent-dark);
+    }
+
+    /* SKELETON LOADERS */
+    .skeleton {
+      background: linear-gradient(90deg, var(--luxury-bg) 25%, var(--border-subtle) 50%, var(--luxury-bg) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: var(--radius-md);
+      height: 16px;
+      margin: 4px 0;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* PREMIUM HOVER EFFECTS */
+    .premium-hover {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .premium-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.15),
+        transparent
+      );
+      transition: var(--transition-smooth);
+    }
+
+    .premium-hover:hover::before {
+      left: 100%;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       .checkout-container {
@@ -448,6 +629,141 @@
       .form-row {
         grid-template-columns: 1fr;
       }
+
+      .header {
+        margin-bottom: 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 6px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .form-section {
+        margin-bottom: 24px;
+      }
+
+      .btn-container {
+        margin-top: 24px;
+      }
+
+      .success-screen {
+        padding: 40px 20px;
+      }
+
+      .success-icon {
+        font-size: 48px;
+      }
+
+      .success-title {
+        font-size: 24px;
+      }
+    }
+
+    /* EXTRA SMALL DEVICES */
+    @media (max-width: 480px) {
+      .checkout-main {
+        padding: 24px 16px;
+      }
+
+      .checkout-sidebar {
+        padding: 24px 16px;
+      }
+
+      .header {
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        font-size: 11px;
+      }
+
+      .form-section-title {
+        font-size: 11px;
+        margin-bottom: 16px;
+      }
+
+      label {
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+
+      input, select {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .StripeElement {
+        padding: 12px 14px;
+        font-size: 13px;
+      }
+
+      .btn-container {
+        flex-direction: column;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 14px 20px;
+        font-size: 12px;
+      }
+
+      .order-item {
+        padding: 12px 0;
+        font-size: 12px;
+      }
+
+      .summary-row {
+        font-size: 12px;
+      }
+
+      .summary-row.total {
+        font-size: 14px;
+      }
+
+      .success-screen {
+        padding: 32px 16px;
+      }
+
+      .success-icon {
+        font-size: 40px;
+      }
+
+      .success-title {
+        font-size: 22px;
+      }
+
+      .success-message {
+        font-size: 12px;
+      }
+
+      .success-order-id {
+        padding: 12px 16px;
+        font-size: 13px;
+      }
+
+      .success-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .success-actions button {
+        padding: 10px 16px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -466,14 +782,14 @@
         <div class="form-section">
           <div class="form-section-title">Contact Information</div>
           <div class="form-row full">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="email">Email Address</label>
               <input type="email" id="email" name="email" placeholder="name@example.com" required>
               <div class="error-message" id="emailError"></div>
             </div>
           </div>
           <div class="form-row full">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="phone">Phone Number</label>
               <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" required>
               <div class="error-message" id="phoneError"></div>
@@ -486,7 +802,7 @@
           <div class="form-section-title">Shipping Address</div>
 
           <div class="form-row full">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="fullName">Full Name</label>
               <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
               <div class="error-message" id="nameError"></div>
@@ -494,7 +810,7 @@
           </div>
 
           <div class="form-row full">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="address">Street Address</label>
               <input type="text" id="address" name="address" placeholder="123 Main Street" required>
               <div class="error-message" id="addressError"></div>
@@ -502,18 +818,18 @@
           </div>
 
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="city">City</label>
               <input type="text" id="city" name="city" placeholder="New York" required>
             </div>
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="state">State/Province</label>
               <input type="text" id="state" name="state" placeholder="NY" required>
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="pin">PIN Code</label>
               <input type="text" id="pin" name="pin" placeholder="110001" required>
               <div class="error-message" id="pinError"></div>
@@ -525,7 +841,7 @@
           </div>
 
           <div class="form-row full">
-            <div class="form-group">
+            <div class="form-group premium-input">
               <label for="country">Country</label>
               <select id="country" name="country" required>
                 <option value="">Select Country</option>
@@ -554,7 +870,7 @@
               <input type="radio" id="paymentCard" name="paymentMethod" value="card" checked>
               <label for="paymentCard" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">💳 Credit/Debit Card</label>
               <div id="cardDetails" style="display: block;">
-                <div class="form-group" style="margin-bottom: 12px;">
+                <div class="form-group premium-input" style="margin-bottom: 12px;">
                   <label for="cardName">Cardholder Name</label>
                   <input type="text" id="cardName" name="cardName" placeholder="John Doe" required>
                 </div>
@@ -569,7 +885,7 @@
               <input type="radio" id="paymentUpi" name="paymentMethod" value="upi">
               <label for="paymentUpi" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">📱 UPI</label>
               <div id="upiDetails" style="display: none;">
-                <div class="form-group" style="margin-bottom: 12px;">
+                <div class="form-group premium-input" style="margin-bottom: 12px;">
                   <label for="upiId">UPI ID</label>
                   <input type="text" id="upiId" name="upiId" placeholder="yourname@upi" required>
                   <p style="color: var(--luxury-text-light); font-size: 12px; margin-top: 4px;">Enter your UPI ID (e.g., name@bank)</p>
@@ -581,7 +897,7 @@
               <label for="paymentCod" style="display: block; font-weight: 600; margin: 8px 0; text-transform: none;">💵 Cash on Delivery</label>
               <div id="codDetails" style="display: none;">
                 <p style="color: var(--luxury-text-light); font-size: 14px; margin-bottom: 8px;">Pay cash when your order arrives</p>
-                <div style="padding: 12px; background: var(--luxury-bg); border: 1px solid var(--border-subtle);">
+                <div style="padding: 12px; background: var(--luxury-bg); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);">
                   Available for orders under ₹5,000
                 </div>
               </div>
